@@ -1,0 +1,166 @@
+/* Import Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS for InSite Health System */
+:root {
+  font-family: 'Mulish', sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light dark;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #ffffff;
+}
+
+#root {
+  width: 100%;
+  margin: 0 auto;
+  text-align: left;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #083791;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #0a4099;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom button styles */
+.btn-primary {
+  @apply bg-insite-blue hover:bg-insite-blue/90 text-white font-semibold py-3 px-6 rounded transition-all duration-300;
+}
+
+.btn-secondary {
+  @apply bg-insite-orange hover:bg-insite-orange/90 text-white font-semibold py-3 px-6 rounded transition-all duration-300;
+}
+
+.btn-outline {
+  @apply border-2 border-insite-blue text-insite-blue hover:bg-insite-blue hover:text-white font-semibold py-3 px-6 rounded transition-all duration-300;
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Hero section gradient overlay */
+.hero-overlay {
+  background: linear-gradient(
+    45deg,
+    rgba(8, 55, 145, 0.8),
+    rgba(8, 55, 145, 0.6)
+  );
+}
+
+/* Section spacing with better responsive breakpoints */
+.section-padding {
+  @apply py-12 sm:py-16 md:py-20 lg:py-24 xl:py-28;
+}
+
+/* Container max widths with responsive padding */
+.container-custom {
+  @apply container mx-auto px-4 sm:px-6 lg:px-8 xl:px-12;
+  max-width: 1400px;
+}
+
+/* Responsive container variants */
+.container-narrow {
+  @apply container mx-auto px-4 sm:px-6 lg:px-8;
+  max-width: 1200px;
+}
+
+.container-wide {
+  @apply container mx-auto px-4 sm:px-6 lg:px-8 xl:px-16;
+  max-width: 1600px;
+}
+
+/* Card hover effects */
+.card-hover {
+  @apply transition-all duration-300 hover:shadow-lg hover:-translate-y-1;
+}
+
+/* Icon styles */
+.icon-primary {
+  @apply text-insite-blue;
+}
+
+.icon-secondary {
+  @apply text-insite-orange;
+}
+
+/* Form styles */
+.form-input {
+  @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200;
+}
+
+.form-label {
+  @apply block text-sm font-medium text-gray-700 mb-2;
+}
+
+/* Mobile menu animation */
+.mobile-menu-enter {
+  transform: translateX(-100%);
+}
+
+.mobile-menu-enter-active {
+  transform: translateX(0);
+  transition: transform 300ms ease-in-out;
+}
+
+.mobile-menu-exit {
+  transform: translateX(0);
+}
+
+.mobile-menu-exit-active {
+  transform: translateX(-100%);
+  transition: transform 300ms ease-in-out;
+}
+
+/* Loading spinner */
+.spinner {
+  @apply animate-spin rounded-full h-8 w-8 border-b-2 border-insite-blue;
+}

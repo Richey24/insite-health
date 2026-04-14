@@ -1,29 +1,127 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { useEffect } from 'react'
+import AuthProvider from './contexts/AuthContext'
+import { BlogContentProvider } from './contexts/BlogContentContext'
 import Header from './components/Header'
 import Footer from './components/Footer'
+import ProtectedRoute from './components/ProtectedRoute'
 import HomePage from './pages/HomePage'
 import AboutPage from './pages/AboutPage'
 import ContactPage from './pages/ContactPage'
 import ServicesPage from './pages/ServicesPage'
 import TeamPage from './pages/TeamPage'
 import BlogPage from './pages/BlogPage'
+import BlogSingle from './pages/BlogSingle'
+import LoginPage from './pages/LoginPage'
+import BlogManagement from './pages/BlogManagement'
+import BlogEditor from './pages/BlogEditor'
+import './i18n' // Initialize i18n
 
 function App() {
+  const { i18n } = useTranslation()
+  
+  useEffect(() => {
+    // Set document direction based on language
+    const isRTL = i18n.language === 'ar'
+    document.documentElement.dir = isRTL ? 'rtl' : 'ltr'
+    document.documentElement.lang = i18n.language
+    
+    // Listen for language changes
+    const handleLanguageChange = (lng) => {
+      const isRTL = lng === 'ar'
+      document.documentElement.dir = isRTL ? 'rtl' : 'ltr'
+      document.documentElement.lang = lng
+    }
+    
+    i18n.on('languageChanged', handleLanguageChange)
+    
+    return () => {
+      i18n.off('languageChanged', handleLanguageChange)
+    }
+  }, [i18n])
+  
   return (
-    <Router>
-      <div className="min-h-screen bg-white">
-        <Header />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/contact" element={<ContactPage />} />
-          <Route path="/services" element={<ServicesPage />} />
-          <Route path="/team" element={<TeamPage />} />
-          <Route path="/blog" element={<BlogPage />} />
-        </Routes>
-        <Footer />
-      </div>
-    </Router>
+    <AuthProvider>
+      <BlogContentProvider>
+        <Router>
+          <div className="min-h-screen bg-white">
+            <Routes>
+            {/* Public Routes with Header/Footer */}
+            <Route path="/" element={
+              <>
+                <Header />
+                <HomePage />
+                <Footer />
+              </>
+            } />
+            <Route path="/about" element={
+              <>
+                <Header />
+                <AboutPage />
+                <Footer />
+              </>
+            } />
+            <Route path="/contact" element={
+              <>
+                <Header />
+                <ContactPage />
+                <Footer />
+              </>
+            } />
+            <Route path="/services" element={
+              <>
+                <Header />
+                <ServicesPage />
+                <Footer />
+              </>
+            } />
+            <Route path="/team" element={
+              <>
+                <Header />
+                <TeamPage />
+                <Footer />
+              </>
+            } />
+            <Route path="/blog" element={
+              <>
+                <Header />
+                <BlogPage />
+                <Footer />
+              </>
+            } />
+            <Route path="/blog/:slug" element={
+              <>
+                <Header />
+                <BlogSingle />
+                <Footer />
+              </>
+            } />
+            
+            {/* Secret Admin Authentication Route */}
+            <Route path="/admin/dashboard/login" element={<LoginPage />} />
+            
+            {/* Protected Blog Management Routes */}
+            <Route path="/blog/manage" element={
+              <ProtectedRoute requiredRole="author">
+                <BlogManagement />
+              </ProtectedRoute>
+            } />
+            <Route path="/blog/manage/new" element={
+              <ProtectedRoute requiredRole="author">
+                <BlogEditor />
+              </ProtectedRoute>
+            } />
+            <Route path="/blog/manage/edit/:id" element={
+              <ProtectedRoute requiredRole="author">
+                <BlogEditor />
+              </ProtectedRoute>
+            } />
+          </Routes>
+        </div>
+      </Router>
+      </BlogContentProvider>
+    </AuthProvider>
   )
 }
 

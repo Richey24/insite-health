@@ -1,11 +1,17 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Phone, Menu, X, ChevronDown } from 'lucide-react';
+import { Phone, Menu, X, ChevronDown, User, Settings, LogOut } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from './LanguageSwitcher';
 
 const Header = () => {
+  const { t } = useTranslation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const location = useLocation();
+  const { isAuthenticated, user, logout } = useAuth();
 
   // Handle scroll effect for sticky header
   useEffect(() => {
@@ -31,32 +37,20 @@ const Header = () => {
   }, [isMobileMenuOpen]);
 
   const navigation = [
+    { name: t('nav.home'), href: '/' },
     {
-      name: 'Home',
-      href: '/',
-      submenu: [
-        { name: 'Home Banner Page', href: '/' },
-        { name: 'Home One Page', href: '/' },
-      ]
-    },
-    {
-      name: 'Hospital',
+      name: t('nav.about'),
       href: '#',
       submenu: [
-        { name: 'About', href: '/about' },
-        { name: 'Team', href: '/team' },
-        { name: 'Pricing Plan', href: '#' },
-        { name: 'FAQ', href: '#' },
-        { name: 'Progress Bars', href: '#' },
-        { name: 'Site Map', href: '#' },
-        { name: 'Testimonial', href: '#' },
+        { name: t('nav.about'), href: '/about' },
+        { name: t('nav.team'), href: '/team' },
       ]
     },
     {
-      name: 'Services',
+      name: t('nav.services'),
       href: '/services',
       submenu: [
-        { name: 'All Services', href: '/services' },
+        { name: t('nav.services'), href: '/services' },
         { name: 'Asset Tracking', href: '/services/asset-tracking' },
         { name: 'Mobile Security', href: '/services/mobile-security' },
         { name: 'Capital Planning', href: '/services/capital-planning' },
@@ -64,23 +58,13 @@ const Header = () => {
       ]
     },
     {
-      name: 'Project',
-      href: '#',
-      submenu: [
-        { name: 'Single Project', href: '#' },
-      ]
-    },
-    {
-      name: 'Blog',
+      name: t('nav.blog'),
       href: '/blog',
       submenu: [
-        { name: 'All Posts', href: '/blog' },
-        { name: 'Healthcare Technology', href: '/blog/category/healthcare-technology' },
-        { name: 'Digital Health', href: '/blog/category/digital-health' },
-        { name: 'Compliance', href: '/blog/category/compliance' },
+        { name: t('nav.blog'), href: '/blog' },
       ]
     },
-    { name: 'Contact', href: '/contact' }
+    { name: t('nav.contact'), href: '/contact' }
   ];
 
   const [openDropdown, setOpenDropdown] = useState(null);
@@ -102,9 +86,9 @@ const Header = () => {
               </a>
             </div>
             <div className="flex space-x-6 text-sm">
-              <a href="#" className="hover:text-insite-cyan transition-colors">Help desk</a>
-              <a href="#" className="hover:text-insite-cyan transition-colors">Emergency</a>
-              <Link to="/contact" className="hover:text-insite-cyan transition-colors">Contact</Link>
+              <a href="#" className="hover:text-insite-cyan transition-colors">{t('header.helpDesk')}</a>
+              <a href="#" className="hover:text-insite-cyan transition-colors">{t('header.emergency')}</a>
+              <Link to="/contact" className="hover:text-insite-cyan transition-colors">{t('nav.contact')}</Link>
             </div>
           </div>
         </div>
@@ -195,13 +179,62 @@ const Header = () => {
               ))}
             </div>
 
-            {/* CTA Button & Mobile Menu Toggle */}
+            {/* CTA Button & User Menu & Mobile Menu Toggle */}
             <div className="flex items-center space-x-4">
+              {/* User Menu for authenticated users */}
+              {isAuthenticated ? (
+                <div className="relative">
+                  <button
+                    onClick={() => setShowUserMenu(!showUserMenu)}
+                    className="hidden md:flex items-center space-x-2 text-gray-700 hover:text-insite-blue transition-colors"
+                  >
+                    <img 
+                      src={user?.avatar || "/assets/images/team-1.jpg"} 
+                      alt={user?.name}
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <span className="text-sm">{user?.name}</span>
+                    <ChevronDown className="w-4 h-4" />
+                  </button>
+                  
+                  {/* User Dropdown */}
+                  {showUserMenu && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                      <Link
+                        to="/blog/manage"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                        onClick={() => setShowUserMenu(false)}
+                      >
+                        <Settings className="w-4 h-4 mr-2" />
+                        {t('nav.manageBlog')}
+                      </Link>
+                      <button
+                        onClick={() => {
+                          logout();
+                          setShowUserMenu(false);
+                        }}
+                        className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        {t('nav.logout')}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="hidden md:flex items-center space-x-3">
+                  {/* Only show login when already authenticated or remove entirely */}
+                </div>
+              )}
+              
+              {/* Language Switcher */}
+              <LanguageSwitcher />
+              
               <a
                 href="#"
                 className="hidden md:inline-flex btn-primary text-sm"
               >
-                Booking Now
+                {t('header.bookingNow')}
               </a>
               
               {/* Mobile menu button */}
@@ -283,14 +316,55 @@ const Header = () => {
               </div>
             ))}
 
-            {/* Mobile CTA Button */}
-            <div className="mt-8">
+            {/* Mobile CTA Button & Auth */}
+            <div className="mt-8 space-y-4">
+              {isAuthenticated ? (
+                <div>
+                  <div className="flex items-center space-x-3 mb-4 p-3 bg-gray-50 rounded-lg">
+                    <img 
+                      src={user?.avatar || "/assets/images/team-1.jpg"} 
+                      alt={user?.name}
+                      className="w-8 h-8 rounded-full"
+                    />
+                    <div>
+                      <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+                      <p className="text-xs text-gray-500 capitalize">{user?.role}</p>
+                    </div>
+                  </div>
+                  <Link
+                    to="/blog/manage"
+                    className="block w-full text-center py-3 border border-insite-blue text-insite-blue rounded-lg hover:bg-insite-blue hover:text-white transition-colors mb-3"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {t('nav.manageBlog')}
+                  </Link>
+                  <button
+                    onClick={() => {
+                      logout();
+                      setIsMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-center py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors mb-3"
+                  >
+                    {t('nav.logout')}
+                  </button>
+                </div>
+              ) : (
+                <div className="mb-3">
+                  {/* No public login access */}
+                </div>
+              )}
+              
+              {/* Mobile Language Switcher */}
+              <div className="mb-4 pb-4 border-b border-gray-200">
+                <LanguageSwitcher variant="inline" />
+              </div>
+              
               <a
                 href="#"
                 className="btn-primary w-full text-center block"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Booking Now
+                {t('header.bookingNow')}
               </a>
             </div>
           </div>

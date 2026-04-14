@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Play, Star, FileText, Users, CheckCircle, Award } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import { Play, Star, FileText, Users, CheckCircle, Award, Settings, Stethoscope, TrendingUp } from 'lucide-react';
 import Modal from 'react-modal';
 
 // Set app element for accessibility
@@ -9,102 +10,83 @@ if (typeof window !== 'undefined') {
 }
 
 const AboutPage = () => {
+  const { t } = useTranslation();
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   const processSteps = [
     {
       number: "01",
-      title: "Apply Online",
-      description: "Lorem ipsum dolor sit amet, ca adipisicing elit sed",
+      title: t('about.pilotStep1Title'),
+      description: t('about.pilotStep1Desc'),
       icon: FileText
     },
     {
-      number: "02", 
-      title: "Submit Documents",
-      description: "Lorem ipsum dolor sit amet, ca adipisicing elit sed",
-      icon: FileText
+      number: "02",
+      title: t('about.pilotStep2Title'),
+      description: t('about.pilotStep2Desc'),
+      icon: Settings
     },
     {
       number: "03",
-      title: "Checking File", 
-      description: "Lorem ipsum dolor sit amet, ca adipisicing elit sed",
-      icon: FileText
+      title: t('about.pilotStep3Title'),
+      description: t('about.pilotStep3Desc'),
+      icon: Stethoscope
     },
     {
       number: "04",
-      title: "Complete Check",
-      description: "Lorem ipsum dolor sit amet, ca adipisicing elit sed",
-      icon: CheckCircle
+      title: t('about.pilotStep4Title'),
+      description: t('about.pilotStep4Desc'),
+      icon: TrendingUp
     }
+  ];
+
+  const testimonialImages = [
+    "/assets/images/testi1.png",
+    "/assets/images/testi2.png",
+    "/assets/images/testi3.png"
   ];
 
   const teamMembers = [
     {
       name: "Dr. Nicolas Poran",
-      position: "Chief Medical Officer",
+      position: t('team.members[0].position', 'Chief Medical Officer'),
       image: "/assets/images/team-1.jpg",
-      social: {
-        facebook: "#",
-        twitter: "#", 
-        vimeo: "#",
-        linkedin: "#"
-      }
+      social: { facebook: "#", twitter: "#", vimeo: "#", linkedin: "#" }
     },
     {
       name: "Dr. Sarah Johnson",
-      position: "Head of Operations",
+      position: t('team.members[1].position', 'Head of Operations'),
       image: "/assets/images/team-4.jpg",
-      social: {
-        facebook: "#",
-        twitter: "#",
-        vimeo: "#", 
-        linkedin: "#"
-      }
+      social: { facebook: "#", twitter: "#", vimeo: "#", linkedin: "#" }
     },
     {
       name: "Michael Chen",
-      position: "Chief Technology Officer",
+      position: t('team.members[2].position', 'Chief Technology Officer'),
       image: "/assets/images/team-3.jpg",
-      social: {
-        facebook: "#",
-        twitter: "#",
-        vimeo: "#",
-        linkedin: "#"
-      }
+      social: { facebook: "#", twitter: "#", vimeo: "#", linkedin: "#" }
     },
     {
       name: "Emily Rodriguez",
-      position: "VP of Customer Success",
+      position: t('team.members[3].position', 'VP of Customer Success'),
       image: "/assets/images/team-2.jpg",
-      social: {
-        facebook: "#",
-        twitter: "#",
-        vimeo: "#",
-        linkedin: "#"
-      }
+      social: { facebook: "#", twitter: "#", vimeo: "#", linkedin: "#" }
     }
   ];
 
-  const testimonials = [
+  const testimonials = t('about.testimonials', { returnObjects: true }) || [
     {
       name: "Dr. Clarence Wesley",
       position: "CEO-Founder",
-      image: "/assets/images/testi1.png",
-      rating: 5,
       comment: "InSite Health System has revolutionized our equipment management. The real-time visibility has improved our operational efficiency significantly."
     },
     {
       name: "Bennett Harper",
-      position: "24/7 Support Manager", 
-      image: "/assets/images/testi2.png",
-      rating: 5,
+      position: "24/7 Support Manager",
       comment: "The support team is exceptional. They understand healthcare workflows and provide solutions that actually work in real hospital environments."
     },
     {
       name: "Dr. Nicolas Poran",
       position: "Chief Medical Officer",
-      image: "/assets/images/testi3.png", 
-      rating: 5,
       comment: "Our staff can now focus more on patient care instead of searching for equipment. It's been a game-changer for our hospital operations."
     }
   ];
@@ -116,12 +98,12 @@ const AboutPage = () => {
         <div className="container-custom">
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-insite-blue mb-4">
-              About
+              {t('about.title', 'About InSite Health System')}
             </h1>
             <nav className="flex items-center justify-center space-x-2 text-sm sm:text-base text-gray-600">
-              <Link to="/" className="hover:text-insite-blue transition-colors">Home</Link>
+              <Link to="/" className="hover:text-insite-blue transition-colors">{t('about.breadcrumbHome', 'Home')}</Link>
               <span>/</span>
-              <span className="text-gray-900">About</span>
+              <span className="text-gray-900">{t('about.breadcrumbAbout', 'About')}</span>
             </nav>
           </div>
         </div>
@@ -135,13 +117,13 @@ const AboutPage = () => {
             <div>
               <div className="mb-8">
                 <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-insite-blue mb-4">
-                  Why Choose Us
+                  {t('about.whyChooseTitle', 'Why Choose InSite Health System?')}
                 </h2>
                 <h3 className="text-xl sm:text-2xl text-gray-700 mb-6">
-                  The Best Medical Health Solution
+                  {t('about.whyChooseSubtitle', 'Proven Results in Healthcare Technology')}
                 </h3>
                 <p className="text-gray-600 text-lg leading-relaxed">
-                  InSite Health System provides cutting-edge real-time equipment visibility solutions designed specifically for modern healthcare facilities. Our technology helps hospitals optimize their operations and improve patient care.
+                  {t('about.description', 'InSite Health System is a leading provider of healthcare technology solutions, specializing in equipment management, real-time visibility, and operational efficiency improvements.')}
                 </p>
               </div>
 
@@ -157,10 +139,10 @@ const AboutPage = () => {
                   </div>
                   <div>
                     <h4 className="text-xl font-semibold text-gray-900 mb-2">
-                      Pleasant Experience
+                      {t('about.feature1Title', 'Pleasant Experience')}
                     </h4>
                     <p className="text-gray-600">
-                      Our user-friendly interface and intuitive design ensure that healthcare professionals can easily adopt and benefit from our technology without extensive training.
+                      {t('about.feature1Desc', 'Our user-friendly interface and intuitive design ensure that healthcare professionals can easily adopt and benefit from our technology without extensive training.')}
                     </p>
                   </div>
                 </div>
@@ -175,10 +157,10 @@ const AboutPage = () => {
                   </div>
                   <div>
                     <h4 className="text-xl font-semibold text-gray-900 mb-2">
-                      World-Class Service
+                      {t('about.feature4Title', 'World-Class Service')}
                     </h4>
                     <p className="text-gray-600">
-                      Our dedicated support team provides 24/7 assistance and works closely with healthcare facilities to ensure successful implementation and ongoing satisfaction.
+                      {t('about.feature4Desc', 'Our dedicated support team provides 24/7 assistance and works closely with healthcare facilities to ensure successful implementation and ongoing satisfaction.')}
                     </p>
                   </div>
                 </div>
@@ -212,10 +194,10 @@ const AboutPage = () => {
         <div className="container-custom">
           <div className="text-center mb-12 lg:mb-16">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-insite-blue mb-4">
-              COMPANY PROCESS
+              {t('about.pilotProcessTitle')}
             </h2>
             <h3 className="text-xl sm:text-2xl lg:text-3xl text-gray-700">
-              Our Working Process
+              {t('about.pilotProcessSubtitle')}
             </h3>
           </div>
           
@@ -252,13 +234,13 @@ const AboutPage = () => {
         <div className="container-custom">
           <div className="text-center">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4">
-              Our Team Members
+              {t('about.teamTitle', 'Meet Our Expert Team')}
             </h2>
             <h3 className="text-xl sm:text-2xl text-insite-light-blue mb-6">
-              We have quality complete expert<br />reviews in our company
+              {t('about.teamSubtitle', 'Healthcare Technology Leaders')}
             </h3>
             <p className="text-lg text-gray-100 max-w-3xl mx-auto leading-relaxed">
-              Our diverse team combines decades of healthcare experience with cutting-edge technology expertise to deliver solutions that truly understand your operational needs.
+              {t('about.statsSubtitle', 'Our diverse team combines decades of healthcare experience with cutting-edge technology expertise to deliver solutions that truly understand your operational needs.')}
             </p>
           </div>
         </div>
@@ -325,7 +307,7 @@ const AboutPage = () => {
               href="#"
               className="inline-flex items-center px-8 py-3 bg-insite-orange hover:bg-insite-orange/90 text-white font-semibold rounded-lg transition-all duration-300 transform hover:scale-105"
             >
-              Discover more →
+              {t('about.discoverMore')}
             </a>
           </div>
         </div>
@@ -337,10 +319,10 @@ const AboutPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 items-center">
             <div className="lg:col-span-2 text-white">
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4">
-                APP DOWNLOAD
+                {t('about.appDownloadTitle')}
               </h2>
               <h3 className="text-xl sm:text-2xl mb-8">
-                We're Trusted by 1500+<br />Worldwide Clients
+                {t('about.appDownloadSubtitle')}
               </h3>
               
               <div className="flex flex-col sm:flex-row gap-4">
@@ -350,8 +332,8 @@ const AboutPage = () => {
                 >
                   <Play className="w-6 h-6 mr-3" />
                   <div className="text-left">
-                    <div className="text-xs">Get it on</div>
-                    <div className="text-lg font-semibold">Google Play</div>
+                    <div className="text-xs">{t('about.getItOnGooglePlay')}</div>
+                    <div className="text-lg font-semibold">{t('about.googlePlay')}</div>
                   </div>
                 </a>
                 
@@ -361,8 +343,8 @@ const AboutPage = () => {
                 >
                   <Users className="w-6 h-6 mr-3" />
                   <div className="text-left">
-                    <div className="text-xs">Download on the</div>
-                    <div className="text-lg font-semibold">App Store</div>
+                    <div className="text-xs">{t('about.downloadOnThe')}</div>
+                    <div className="text-lg font-semibold">{t('about.appStore')}</div>
                   </div>
                 </a>
               </div>
@@ -385,10 +367,10 @@ const AboutPage = () => {
         <div className="container-custom">
           <div className="text-center mb-12 lg:mb-16">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-insite-blue mb-4">
-              TESTIMONIAL
+              {t('about.testimonialTitle')}
             </h2>
             <h3 className="text-xl sm:text-2xl lg:text-3xl text-gray-700">
-              Our Best Clients
+              {t('about.testimonialSubtitle')}
             </h3>
           </div>
 
@@ -397,7 +379,7 @@ const AboutPage = () => {
               <div key={index} className="bg-white rounded-lg p-6 sm:p-8 shadow-lg hover:shadow-xl transition-shadow duration-300">
                 <div className="text-center mb-6">
                   <img
-                    src={testimonial.image}
+                    src={testimonialImages[index]}
                     alt={testimonial.name}
                     className="w-20 h-20 rounded-full mx-auto mb-4 object-cover"
                   />
@@ -409,7 +391,7 @@ const AboutPage = () => {
                   </span>
                   
                   <div className="flex justify-center mt-3">
-                    {[...Array(testimonial.rating)].map((_, i) => (
+                    {[...Array(5)].map((_, i) => (
                       <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
                     ))}
                   </div>

@@ -33,7 +33,7 @@ const TestimonialSlider = ({ testimonials }) => {
       <div className="bg-white rounded-xl shadow-lg p-8 md:p-12 mx-auto max-w-4xl">
         <div className="text-center">
           {/* Quote Icon */}
-          <div className="text-6xl text-primary/20 mb-6">"</div>
+          <div className="text-6xl text-insite-blue/20 mb-6">"</div>
           
           {/* Testimonial Text */}
           <p className="text-xl md:text-2xl text-gray-700 leading-relaxed mb-8 italic">
@@ -50,13 +50,13 @@ const TestimonialSlider = ({ testimonials }) => {
             <img 
               src={testimonials[currentSlide]?.image} 
               alt={testimonials[currentSlide]?.name}
-              className="w-16 h-16 rounded-full object-cover border-4 border-primary/20"
+              className="w-16 h-16 rounded-full object-cover border-4 border-insite-blue/20"
             />
             <div className="text-center sm:text-left">
               <h4 className="text-lg font-bold text-gray-900">
                 {testimonials[currentSlide]?.name}
               </h4>
-              <p className="text-primary font-medium">
+              <p className="text-insite-blue font-medium">
                 {testimonials[currentSlide]?.role}
               </p>
             </div>
@@ -67,7 +67,7 @@ const TestimonialSlider = ({ testimonials }) => {
       {/* Navigation Arrows */}
       <button 
         onClick={prevSlide}
-        className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors z-10"
+        className="absolute left-0 top-1/2 transform -translate-y-1/2 -translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-insite-blue hover:bg-insite-blue hover:text-white transition-colors z-10"
         aria-label="Previous testimonial"
       >
         <ChevronLeft className="h-6 w-6" />
@@ -75,7 +75,7 @@ const TestimonialSlider = ({ testimonials }) => {
       
       <button 
         onClick={nextSlide}
-        className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors z-10"
+        className="absolute right-0 top-1/2 transform -translate-y-1/2 translate-x-4 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center text-insite-blue hover:bg-insite-blue hover:text-white transition-colors z-10"
         aria-label="Next testimonial"
       >
         <ChevronRight className="h-6 w-6" />
@@ -88,7 +88,7 @@ const TestimonialSlider = ({ testimonials }) => {
             key={index}
             onClick={() => setCurrentSlide(index)}
             className={`w-3 h-3 rounded-full transition-colors ${
-              index === currentSlide ? 'bg-primary' : 'bg-gray-300'
+              index === currentSlide ? 'bg-insite-blue' : 'bg-gray-300'
             }`}
             aria-label={`Go to testimonial ${index + 1}`}
           />
@@ -122,7 +122,7 @@ const TestimonialSlider = ({ testimonials }) => {
                 <h5 className="font-semibold text-gray-900 text-sm">
                   {testimonial.name}
                 </h5>
-                <p className="text-primary text-xs">
+                <p className="text-insite-blue text-xs">
                   {testimonial.role}
                 </p>
               </div>

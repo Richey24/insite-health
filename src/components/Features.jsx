@@ -1,34 +1,36 @@
 import { Clock, MapPin, FileText, ArrowRight } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
+import { useTranslation } from 'react-i18next';
 
 const Features = () => {
+  const { t } = useTranslation();
   const [featuresRef, isVisible] = useScrollAnimation({ threshold: 0.2 });
 
   const features = [
     {
       id: 1,
       icon: Clock,
-      title: 'How can we help you?',
-      description: 'Hospitals lose valuable clinical time every day searching for mobile equipment — wheelchairs, IV pumps, portable imaging, transport devices.',
-      buttonText: 'Explore Programs',
+      title: t('homepage.howCanWeHelp'),
+      description: t('homepage.howCanWeHelpDesc'),
+      buttonText: t('homepage.explorePrograms'),
       buttonLink: '#services',
       delay: '0ms'
     },
     {
       id: 2,
       icon: MapPin,
-      title: 'Our Address',
-      description: '7710 Hazard Center Dr # E, California 92108 United States.',
+      title: t('homepage.ourAddress'),
+      description: t('homepage.address'),
       hasMap: true,
       delay: '200ms'
     },
     {
       id: 3,
       icon: FileText,
-      title: 'Stop Searching.',
-      subtitle: 'Start Delivering Care.',
-      description: 'InSite Health Systems provides real‑time equipment visibility so staff can instantly locate what they need — without disrupting workflows or tracking patients.',
-      buttonText: 'Explore Programs',
+      title: t('homepage.stopSearching'),
+      subtitle: t('homepage.startDelivering'),
+      description: t('homepage.stopSearchingDesc'),
+      buttonText: t('homepage.explorePrograms'),
       buttonLink: '#services',
       delay: '400ms'
     }

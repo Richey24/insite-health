@@ -10,6 +10,10 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Main brand colors with aliases
+        'primary': '#083791',       // Primary brand color (insite-blue)
+        'secondary': '#18c8ff',     // Secondary accent (insite-cyan)
+        'accent': '#FF8E32',        // Call-to-action color (insite-orange)
         'insite': {
           'blue': '#083791',        // Primary brand color
           'cyan': '#18c8ff',        // Secondary accent  
@@ -36,7 +40,7 @@ export default {
         }
       },
       fontFamily: {
-        'mulish': ['Mulish', 'sans-serif'],
+        'outfit': ['Outfit', 'sans-serif'],
       },
       fontSize: {
         'hero-lg': ['3.5rem', { lineHeight: '1.1' }],

@@ -1,40 +1,42 @@
 import { ArrowRight } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
+import { useTranslation } from 'react-i18next';
 
 const Solutions = () => {
+  const { t } = useTranslation();
   const [solutionsRef, isVisible] = useScrollAnimation({ threshold: 0.2 });
 
   const solutions = [
     {
       id: 1,
       image: '/assets/images/solution-thumb-01.jpg',
-      title: 'For Nurses',
+      title: t('homepage.forNurses'),
       features: [
-        'Quickly find nearby equipment local',
-        'Quickly view equipment last‑seen local', 
-        'No extra documentation burden'
+        t('homepage.forNursesFeature1'),
+        t('homepage.forNursesFeature2'), 
+        t('homepage.forNursesFeature3')
       ],
       delay: '0ms'
     },
     {
       id: 2,
       image: '/assets/images/solution-thumb-02.jpg',
-      title: 'For Facilities & Operations',
+      title: t('homepage.forFacilities'),
       features: [
-        'Identify idle or missing equipment',
-        'Monitor equipment movement history',
-        'Improve cleaning & use workflows'
+        t('homepage.forFacilitiesFeature1'),
+        t('homepage.forFacilitiesFeature2'),
+        t('homepage.forFacilitiesFeature3')
       ],
       delay: '200ms'
     },
     {
       id: 3,
       image: '/assets/images/solution-thumb-03.jpg',
-      title: 'For Executives',
+      title: t('homepage.forExecutives'),
       features: [
-        'View equipment utilization trends',
-        'Identify excessive inventory',
-        'Make data‑driven capital decisions'
+        t('homepage.forExecutivesFeature1'),
+        t('homepage.forExecutivesFeature2'),
+        t('homepage.forExecutivesFeature3')
       ],
       delay: '400ms'
     }
@@ -46,11 +48,10 @@ const Solutions = () => {
         {/* Section Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Healthcare Solutions for Everyone
+            {t('homepage.solutionsTitle')}
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Our comprehensive equipment tracking solutions are designed to serve the unique needs 
-            of different healthcare professionals and departments.
+            {t('homepage.solutionsDesc')}
           </p>
         </div>
 
@@ -102,7 +103,7 @@ const Solutions = () => {
                   href="#"
                   className="inline-flex items-center space-x-2 text-insite-blue hover:text-insite-orange font-semibold transition-colors duration-200 group/btn"
                 >
-                  <span>Discover more</span>
+                  <span>{t('homepage.discoverMore')}</span>
                   <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform duration-200" />
                 </a>
               </div>
@@ -114,24 +115,23 @@ const Solutions = () => {
         <div className="mt-16 text-center">
           <div className="bg-white rounded-2xl shadow-soft p-8 md:p-12">
             <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-              Ready to Transform Your Healthcare Operations?
+              {t('homepage.readyToTransform')}
             </h3>
             <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">
-              Join hundreds of healthcare facilities that have improved their equipment 
-              visibility and operational efficiency with InSite Health Systems.
+              {t('homepage.readyToTransformDesc')}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="#contact"
                 className="btn-primary text-center"
               >
-                Schedule a Demo
+                {t('homepage.scheduleDemo')}
               </a>
               <a
                 href="#"
                 className="btn-outline text-center"
               >
-                Learn More
+                {t('homepage.learnMore')}
               </a>
             </div>
           </div>

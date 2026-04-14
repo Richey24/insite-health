@@ -1,20 +1,22 @@
 import { ArrowRight, CheckCircle } from 'lucide-react';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
+import { useTranslation } from 'react-i18next';
 
 const Environments = () => {
+  const { t } = useTranslation();
   const [environmentsRef, isVisible] = useScrollAnimation({ threshold: 0.2 });
 
   const environments = [
-    'Acute Care Hospitals',
-    'Emergency & Trauma Facilities', 
-    'Specialty Hospitals',
-    'Post‑Acute & Extended Care',
-    'Outpatient & Ambulatory Care',
-    'Diagnostic & Imaging Centers',
-    'Government & Institutional Healthcare',
-    'Multi‑Building Healthcare Campuses',
-    'Mobile & Field Healthcare',
-    'Private Healthcare Networks'
+    t('homepage.acuteCare'),
+    t('homepage.emergency'), 
+    t('homepage.specialty'),
+    t('homepage.postAcute'),
+    t('homepage.outpatient'),
+    t('homepage.diagnostic'),
+    t('homepage.government'),
+    t('homepage.multiBuilding'),
+    t('homepage.mobileField'),
+    t('homepage.privateNetworks')
   ];
 
   return (
@@ -28,7 +30,7 @@ const Environments = () => {
           <div className={`${isVisible ? 'animate-fadeInUp' : 'opacity-0'}`}>
             <div className="bg-gradient-to-br from-insite-blue/5 to-insite-cyan/5 rounded-2xl p-8 shadow-soft">
               <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-6">
-                Healthcare Environments We Serve
+                {t('homepage.environmentsTitle')}
               </h2>
               
               <ul className="space-y-4 mb-8">
@@ -54,7 +56,7 @@ const Environments = () => {
                 href="#"
                 className="inline-flex items-center space-x-2 text-insite-blue hover:text-insite-orange font-semibold transition-colors duration-200 group"
               >
-                <span>Discover more</span>
+                <span>{t('homepage.discoverMore')}</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
               </a>
             </div>
@@ -65,26 +67,20 @@ const Environments = () => {
             <div className="space-y-6">
               <div>
                 <h3 className="text-insite-blue font-semibold text-lg mb-2">
-                  Learn more
+                  {t('homepage.learnMoreAbout')}
                 </h3>
                 <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                  We are professional team, over 25 years of experience passionate about our work
+                  {t('homepage.professionalTeamTitle')}
                 </h2>
               </div>
 
               <div className="space-y-4">
                 <p className="text-gray-600 leading-relaxed">
-                  At InSite Health Systems, we understand that every healthcare environment has unique 
-                  operational challenges. Our real-time equipment visibility solutions are designed 
-                  to adapt to the specific needs of your facility, whether you're running a large 
-                  academic medical center or a specialized outpatient clinic.
+                  {t('homepage.professionalTeamDesc')}
                 </p>
                 
                 <p className="text-gray-600 leading-relaxed">
-                  Our team brings decades of combined experience in healthcare operations, 
-                  technology implementation, and equipment management. We've worked with facilities 
-                  of all sizes to improve operational efficiency and reduce the time staff spend 
-                  searching for critical equipment.
+                  {t('homepage.teamExperience')}
                 </p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-6">
@@ -93,8 +89,8 @@ const Environments = () => {
                       <CheckCircle className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">HIPAA Compliant</h4>
-                      <p className="text-sm text-gray-600">Secure & Private</p>
+                      <h4 className="font-semibold text-gray-900">{t('homepage.hipaaCompliant')}</h4>
+                      <p className="text-sm text-gray-600">{t('homepage.securePrivate')}</p>
                     </div>
                   </div>
 
@@ -103,8 +99,8 @@ const Environments = () => {
                       <CheckCircle className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900">24/7 Support</h4>
-                      <p className="text-sm text-gray-600">Always Available</p>
+                      <h4 className="font-semibold text-gray-900">{t('homepage.support24_7')}</h4>
+                      <p className="text-sm text-gray-600">{t('homepage.alwaysAvailable')}</p>
                     </div>
                   </div>
                 </div>
@@ -115,7 +111,7 @@ const Environments = () => {
                   href="#"
                   className="inline-flex items-center space-x-2 btn-primary group"
                 >
-                  <span>Discover more</span>
+                  <span>{t('homepage.discoverMore')}</span>
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
                 </a>
               </div>

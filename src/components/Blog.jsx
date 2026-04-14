@@ -1,12 +1,14 @@
 import { Calendar, Clock, ArrowRight, User } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 const Blog = () => {
+  const { t } = useTranslation();
   const blogPosts = [
     {
       id: 1,
       title: "5 Ways Real-Time Equipment Tracking Improves Patient Safety",
       excerpt: "Discover how modern equipment visibility solutions directly impact patient outcomes and safety metrics in healthcare facilities.",
-      image: "/assets/images/blog1.jpg",
+      image: "/assets/images/themex-blog-1.jpg",
       category: "Patient Safety",
       author: "Dr. Sarah Johnson",
       date: "March 15, 2024",
@@ -17,7 +19,7 @@ const Blog = () => {
       id: 2,
       title: "ROI Analysis: The Financial Impact of Equipment Management Systems",
       excerpt: "A comprehensive breakdown of cost savings and efficiency gains from implementing automated equipment tracking solutions.",
-      image: "/assets/images/blog2.jpg",
+      image: "/assets/images/themex-blog-2.jpg",
       category: "Healthcare Economics",
       author: "Michael Chen",
       date: "March 12, 2024",
@@ -27,7 +29,7 @@ const Blog = () => {
       id: 3,
       title: "HIPAA Compliance in Healthcare IoT: What You Need to Know",
       excerpt: "Essential guidelines for maintaining patient privacy and data security when implementing IoT solutions in healthcare.",
-      image: "/assets/images/blog3.jpg",
+      image: "/assets/images/themex-blog-3.jpg",
       category: "Compliance",
       author: "Emily Rodriguez",
       date: "March 10, 2024",
@@ -37,7 +39,7 @@ const Blog = () => {
       id: 4,
       title: "Case Study: Metro General Hospital's Equipment Optimization Journey",
       excerpt: "How a 500-bed hospital reduced equipment search time by 75% and improved staff efficiency with InSite Health System.",
-      image: "/assets/images/blog4.jpg",
+      image: "/assets/images/themex-blog-4.jpg",
       category: "Case Study",
       author: "James Wilson",
       date: "March 8, 2024",
@@ -46,12 +48,12 @@ const Blog = () => {
   ];
 
   const categories = [
-    "All Posts",
-    "Patient Safety", 
-    "Healthcare Economics",
-    "Compliance",
-    "Case Study",
-    "Technology"
+    t('blog.allPosts', 'All Posts'),
+    t('blog.categories.patientSafety', 'Patient Safety'), 
+    t('blog.categories.healthcareEconomics', 'Healthcare Economics'),
+    t('blog.categories.compliance', 'Compliance'),
+    t('blog.categories.caseStudy', 'Case Study'),
+    t('blog.categories.technology', 'Technology')
   ];
 
   return (
@@ -59,11 +61,10 @@ const Blog = () => {
       <div className="container-custom">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-            Healthcare Technology Insights
+            {t('blog.title', 'Healthcare Technology Insights')}
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Stay informed with the latest trends, best practices, and innovations 
-            in healthcare technology and equipment management.
+            {t('blog.subtitle', 'Stay informed with the latest trends, best practices, and innovations in healthcare technology and equipment management.')}
           </p>
         </div>
 
@@ -106,7 +107,7 @@ const Blog = () => {
                   <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
                     <div className="flex items-center gap-4 mb-4">
                       <span className="bg-insite-orange text-white px-3 py-1 rounded-full text-sm font-medium">
-                        Featured
+                        {t('blog.featured', 'Featured')}
                       </span>
                       <span className="bg-insite-blue/10 text-insite-blue px-3 py-1 rounded-full text-sm font-medium">
                         {post.category}
@@ -137,7 +138,7 @@ const Blog = () => {
                         href="#"
                         className="inline-flex items-center gap-2 text-insite-blue font-semibold hover:text-insite-cyan transition-colors duration-200"
                       >
-                        Read More
+                        {t('blog.readMore', 'Read More')}
                         <ArrowRight size={16} />
                       </a>
                     </div>
@@ -205,7 +206,7 @@ const Blog = () => {
                       href="#"
                       className="inline-flex items-center gap-2 text-insite-blue font-semibold hover:text-insite-cyan transition-colors duration-200"
                     >
-                      Read More
+                      {t('blog.readMore', 'Read More')}
                       <ArrowRight size={14} />
                     </a>
                   </div>
@@ -219,25 +220,24 @@ const Blog = () => {
         <div className="mt-16">
           <div className="bg-background-section rounded-2xl p-8 lg:p-12 text-center">
             <h3 className="text-2xl md:text-3xl font-bold text-gray-800 mb-4">
-              Stay Updated with Healthcare Technology Insights
+              {t('blog.newsletter.title', 'Stay Updated with Healthcare Technology Insights')}
             </h3>
             <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-              Subscribe to our newsletter and get the latest articles, case studies, 
-              and industry insights delivered directly to your inbox.
+              {t('blog.newsletter.description', 'Subscribe to our newsletter and get the latest articles, case studies, and industry insights delivered directly to your inbox.')}
             </p>
             <div className="max-w-md mx-auto">
               <div className="flex flex-col sm:flex-row gap-3">
                 <input
                   type="email"
-                  placeholder="Enter your email address"
+                  placeholder={t('blog.newsletter.placeholder', 'Enter your email address')}
                   className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                 />
                 <button className="btn-primary whitespace-nowrap">
-                  Subscribe Now
+                  {t('blog.newsletter.subscribe', 'Subscribe Now')}
                 </button>
               </div>
               <p className="text-sm text-gray-500 mt-3">
-                No spam, unsubscribe at any time. Privacy policy applies.
+                {t('blog.newsletter.privacy', 'No spam, unsubscribe at any time. Privacy policy applies.')}
               </p>
             </div>
           </div>
@@ -249,7 +249,7 @@ const Blog = () => {
             href="#"
             className="btn-outline inline-flex items-center justify-center gap-2"
           >
-            View All Posts
+            {t('blog.viewAllPosts', 'View All Posts')}
             <ArrowRight size={20} />
           </a>
         </div>

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useTranslation } from 'react-i18next';
 import { 
   MapPin, 
   Phone, 
@@ -14,6 +15,7 @@ import { appointmentSchema, contactSchema } from '../utils/formValidation';
 import { submitAppointment, submitContact } from '../utils/api';
 
 const Contact = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('appointment');
   const [submitStatus, setSubmitStatus] = useState(null);
 
@@ -70,22 +72,22 @@ const Contact = () => {
   };
 
   const appointmentTypes = [
-    'Product Demo',
-    'Consultation',
-    'Implementation Planning',
-    'Technical Support',
-    'Partnership Discussion',
-    'Other'
+    t('contact.appointmentTypes.productDemo', 'Product Demo'),
+    t('contact.appointmentTypes.consultation', 'Consultation'),
+    t('contact.appointmentTypes.implementationPlanning', 'Implementation Planning'),
+    t('contact.appointmentTypes.technicalSupport', 'Technical Support'),
+    t('contact.appointmentTypes.partnershipDiscussion', 'Partnership Discussion'),
+    t('contact.appointmentTypes.other', 'Other')
   ];
 
   const timeSlots = [
-    '9:00 AM - 10:00 AM',
-    '10:00 AM - 11:00 AM',
-    '11:00 AM - 12:00 PM',
-    '1:00 PM - 2:00 PM',
-    '2:00 PM - 3:00 PM',
-    '3:00 PM - 4:00 PM',
-    '4:00 PM - 5:00 PM'
+    t('contact.timeSlots.9am', '9:00 AM - 10:00 AM'),
+    t('contact.timeSlots.10am', '10:00 AM - 11:00 AM'),
+    t('contact.timeSlots.11am', '11:00 AM - 12:00 PM'),
+    t('contact.timeSlots.1pm', '1:00 PM - 2:00 PM'),
+    t('contact.timeSlots.2pm', '2:00 PM - 3:00 PM'),
+    t('contact.timeSlots.3pm', '3:00 PM - 4:00 PM'),
+    t('contact.timeSlots.4pm', '4:00 PM - 5:00 PM')
   ];
 
   return (
@@ -93,11 +95,10 @@ const Contact = () => {
       <div className="container-custom">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-            Get in Touch with InSite Health System
+            {t('contact.title', 'Get in Touch with InSite Health System')}
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Ready to transform your healthcare facility's equipment management? 
-            Contact our experts to schedule a demo or learn more about our solutions.
+            {t('contact.subtitle', 'Ready to transform your healthcare facility\'s equipment management? Contact our experts to schedule a demo or learn more about our solutions.')}
           </p>
         </div>
 
@@ -106,7 +107,7 @@ const Contact = () => {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-soft p-8">
               <h3 className="text-2xl font-bold text-gray-800 mb-6">
-                Contact Information
+                {t('contact.contactInformation', 'Contact Information')}
               </h3>
               
               <div className="space-y-6">
@@ -115,11 +116,9 @@ const Contact = () => {
                     <MapPin className="text-insite-blue" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 mb-1">Address</h4>
-                    <p className="text-gray-600">
-                      123 Healthcare Technology Blvd<br />
-                      Suite 500<br />
-                      Medical District, CA 90210
+                    <h4 className="font-semibold text-gray-800 mb-1">{t('contact.address', 'Address')}</h4>
+                    <p className="text-gray-600 whitespace-pre-line">
+                      {t('contact.contactDetails.addressFull', '123 Healthcare Technology Blvd\nSuite 500\nMedical District, CA 90210')}
                     </p>
                   </div>
                 </div>
@@ -129,10 +128,10 @@ const Contact = () => {
                     <Phone className="text-insite-cyan" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 mb-1">Phone</h4>
+                    <h4 className="font-semibold text-gray-800 mb-1">{t('contact.phone', 'Phone')}</h4>
                     <p className="text-gray-600">
-                      Sales: (555) 123-4567<br />
-                      Support: (555) 123-4568
+                      {t('contact.contactDetails.salesPhone', 'Sales: (555) 123-4567')}<br />
+                      {t('contact.contactDetails.supportPhone', 'Support: (555) 123-4568')}
                     </p>
                   </div>
                 </div>
@@ -142,10 +141,10 @@ const Contact = () => {
                     <Mail className="text-insite-orange" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 mb-1">Email</h4>
+                    <h4 className="font-semibold text-gray-800 mb-1">{t('contact.email', 'Email')}</h4>
                     <p className="text-gray-600">
-                      sales@insitehealth.com<br />
-                      support@insitehealth.com
+                      {t('contact.contactDetails.salesEmail', 'sales@insitehealth.com')}<br />
+                      {t('contact.contactDetails.supportEmail', 'support@insitehealth.com')}
                     </p>
                   </div>
                 </div>
@@ -155,10 +154,10 @@ const Contact = () => {
                     <Clock className="text-green-500" size={24} />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-gray-800 mb-1">Business Hours</h4>
+                    <h4 className="font-semibold text-gray-800 mb-1">{t('contact.businessHours', 'Business Hours')}</h4>
                     <p className="text-gray-600">
-                      Monday - Friday: 8:00 AM - 6:00 PM PST<br />
-                      24/7 Emergency Support Available
+                      {t('contact.contactDetails.businessHours', 'Monday - Friday: 8:00 AM - 6:00 PM PST')}<br />
+                      {t('contact.contactDetails.emergencySupport', '24/7 Emergency Support Available')}
                     </p>
                   </div>
                 </div>
@@ -168,12 +167,12 @@ const Contact = () => {
               <div className="mt-8 pt-8 border-t border-gray-100">
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
-                    <div className="text-2xl font-bold text-insite-blue">&lt;1hr</div>
-                    <div className="text-sm text-gray-600">Response Time</div>
+                    <div className="text-2xl font-bold text-insite-blue">{t('contact.quickStats.responseTime', '<1hr')}</div>
+                    <div className="text-sm text-gray-600">{t('contact.quickStats.responseTimeLabel', 'Response Time')}</div>
                   </div>
                   <div>
-                    <div className="text-2xl font-bold text-insite-cyan">24/7</div>
-                    <div className="text-sm text-gray-600">Support Available</div>
+                    <div className="text-2xl font-bold text-insite-cyan">{t('contact.quickStats.support247', '24/7')}</div>
+                    <div className="text-sm text-gray-600">{t('contact.quickStats.supportLabel', 'Support Available')}</div>
                   </div>
                 </div>
               </div>
@@ -193,7 +192,7 @@ const Contact = () => {
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
-                  Schedule Appointment
+                  {t('contact.scheduleAppointment', 'Schedule Appointment')}
                 </button>
                 <button
                   onClick={() => setActiveTab('contact')}
@@ -203,7 +202,7 @@ const Contact = () => {
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                 >
-                  General Contact
+                  {t('contact.generalContact', 'General Contact')}
                 </button>
               </div>
 
@@ -214,11 +213,11 @@ const Contact = () => {
                   <form onSubmit={appointmentForm.handleSubmit(onSubmitAppointment)} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
-                        <label className="form-label">Full Name *</label>
+                        <label className="form-label">{t('contact.fullName', 'Full Name')} {t('contact.required', '*')}</label>
                         <input
                           {...appointmentForm.register('name')}
                           className="form-input"
-                          placeholder="Enter your full name"
+                          placeholder={t('contact.placeholders.fullName', 'Enter your full name')}
                         />
                         {appointmentForm.formState.errors.name && (
                           <p className="text-red-500 text-sm mt-1">
@@ -228,12 +227,12 @@ const Contact = () => {
                       </div>
 
                       <div>
-                        <label className="form-label">Email Address *</label>
+                        <label className="form-label">{t('contact.emailAddress', 'Email Address')} {t('contact.required', '*')}</label>
                         <input
                           {...appointmentForm.register('email')}
                           type="email"
                           className="form-input"
-                          placeholder="Enter your email"
+                          placeholder={t('contact.placeholders.email', 'Enter your email')}
                         />
                         {appointmentForm.formState.errors.email && (
                           <p className="text-red-500 text-sm mt-1">
@@ -332,7 +331,7 @@ const Contact = () => {
                       ) : (
                         <>
                           <Send size={20} />
-                          Schedule Appointment
+                          {t('contact.scheduleAppointmentBtn', 'Schedule Appointment')}
                         </>
                       )}
                     </button>
@@ -412,7 +411,7 @@ const Contact = () => {
                       ) : (
                         <>
                           <Send size={20} />
-                          Send Message
+                          {t('contact.sendMessage', 'Send Message')}
                         </>
                       )}
                     </button>
@@ -424,8 +423,11 @@ const Contact = () => {
                   <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
                     <CheckCircle className="text-green-600" size={20} />
                     <p className="text-green-700">
-                      Thank you! Your {activeTab === 'appointment' ? 'appointment request' : 'message'} has been sent successfully. 
-                      We'll get back to you within 24 hours.
+                      {t('contact.messages.success', 'Thank you! Your {type} has been sent successfully. We\'ll get back to you within 24 hours.', {
+                        type: activeTab === 'appointment' 
+                          ? t('contact.messages.appointmentSuccess', 'appointment request')
+                          : t('contact.messages.messageSuccess', 'message')
+                      })}
                     </p>
                   </div>
                 )}
@@ -434,7 +436,7 @@ const Contact = () => {
                   <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3">
                     <AlertCircle className="text-red-600" size={20} />
                     <p className="text-red-700">
-                      Sorry, there was an error sending your message. Please try again or contact us directly.
+                      {t('contact.messages.error', 'Sorry, there was an error sending your message. Please try again or contact us directly.')}
                     </p>
                   </div>
                 )}

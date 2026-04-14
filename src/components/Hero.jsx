@@ -1,5 +1,6 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination, EffectFade } from 'swiper/modules';
+import { useTranslation } from 'react-i18next';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -8,17 +9,17 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
 const Hero = () => {
+  const { t } = useTranslation();
+  
   const slides = [
     {
       id: 1,
       backgroundImage: '/assets/images/slider3.jpg',
-      title: 'Real-Time Equipment Visibility',
-      subtitle: 'for Modern Hospitals',
-      description: 'Intelligent, Low-Impact',
-      subdescription: 'Equipment Tracking',
-      tagline: 'Built for Hospitals. Designed for Simplicity',
-      privacy: 'With Privacy & Security First!',
-      ctaText: 'Make an appointment',
+      title: t('hero.title'),
+      subtitle: t('hero.subtitle'),
+      description: t('hero.description'),
+      tagline: t('hero.tagline'),
+      ctaText: t('hero.ctaText'),
       ctaLink: '#contact'
     },
     // You can add more slides here in the future
@@ -73,33 +74,21 @@ const Hero = () => {
                   {/* Main Title */}
                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight">
                     {slide.title}
-                    {slide.subtitle && (
-                      <>
-                        <br />
-                        <span className="text-insite-cyan">{slide.subtitle}</span>
-                      </>
-                    )}
                   </h1>
                   
-                  {/* Description */}
+                  {/* Subtitle */}
                   <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-2 sm:mb-4 text-insite-light-blue">
-                    {slide.description}
-                    {slide.subdescription && (
-                      <>
-                        <br />
-                        <span>{slide.subdescription}</span>
-                      </>
-                    )}
+                    {slide.subtitle}
                   </h2>
                   
-                  {/* Tagline */}
+                  {/* Description */}
                   <h3 className="text-base sm:text-lg md:text-xl lg:text-2xl font-medium mb-3 sm:mb-4 text-gray-100">
-                    {slide.tagline}
+                    {slide.description}
                   </h3>
                   
-                  {/* Privacy Note */}
-                  <p className="text-sm sm:text-base md:text-lg mb-6 sm:mb-8 text-insite-cyan font-medium">
-                    {slide.privacy}
+                  {/* Tagline */}
+                  <p className="text-sm sm:text-base md:text-lg font-medium mb-6 sm:mb-8 text-insite-cyan">
+                    {slide.tagline}
                   </p>
                   
                   {/* CTA Button */}

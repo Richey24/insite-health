@@ -18,7 +18,7 @@ const HomePage = () => {
       <Solutions />
       <Environments />
       <AboutTabs />
-      <Team />
+      {/* <Team /> */}
       <WhyChoose />
       <Statistics />
       <FAQ />

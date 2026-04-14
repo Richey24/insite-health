@@ -1,77 +1,43 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CheckCircle, Target, Users, Heart } from 'lucide-react';
 
 const AboutTabs = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('mission');
 
   const tabs = [
     {
       id: 'mission',
-      label: 'Our Mission',
+      label: t('aboutTabs.mission.label'),
       icon: Target,
-      title: 'Transforming Healthcare Technology',
-      content: [
-        'InSite Health System is dedicated to revolutionizing hospital operations through intelligent, real-time equipment visibility solutions.',
-        'We provide cutting-edge technology that helps healthcare providers locate, track, and optimize their medical equipment usage.',
-        'Our mission is to enhance patient care by ensuring critical equipment is always available when and where it\'s needed most.'
-      ],
-      features: [
-        'Real-time asset tracking and monitoring',
-        'Seamless integration with existing hospital systems',
-        'Privacy-first approach to sensitive healthcare data',
-        'Scalable solutions for hospitals of all sizes'
-      ]
+      title: t('aboutTabs.mission.title'),
+      content: t('aboutTabs.mission.content', { returnObjects: true }),
+      features: t('aboutTabs.mission.features', { returnObjects: true })
     },
     {
       id: 'vision',
-      label: 'Our Vision',
+      label: t('aboutTabs.vision.label'),
       icon: CheckCircle,
-      title: 'The Future of Smart Healthcare',
-      content: [
-        'We envision a healthcare ecosystem where technology seamlessly supports medical professionals in delivering exceptional patient care.',
-        'Our vision extends beyond simple tracking to creating intelligent systems that predict equipment needs and optimize hospital workflows.',
-        'We strive to be the global leader in healthcare technology solutions that prioritize both efficiency and patient safety.'
-      ],
-      features: [
-        'Predictive analytics for equipment management',
-        'AI-powered optimization recommendations',
-        'Global network of connected healthcare facilities',
-        'Sustainable and environmentally conscious technology'
-      ]
+      title: t('aboutTabs.vision.title'),
+      content: t('aboutTabs.vision.content', { returnObjects: true }),
+      features: t('aboutTabs.vision.features', { returnObjects: true })
     },
     {
       id: 'values',
-      label: 'Our Values',
+      label: t('aboutTabs.values.label'),
       icon: Heart,
-      title: 'Built on Trust and Innovation',
-      content: [
-        'Patient safety and care quality are at the heart of everything we do.',
-        'We believe in transparency, reliability, and the power of technology to transform healthcare for the better.',
-        'Our commitment to privacy and security ensures that sensitive healthcare data is always protected.'
-      ],
-      features: [
-        'Patient-first approach to all solutions',
-        'Uncompromising commitment to data security',
-        'Continuous innovation and improvement',
-        'Collaborative partnership with healthcare professionals'
-      ]
+      title: t('aboutTabs.values.title'),
+      content: t('aboutTabs.values.content', { returnObjects: true }),
+      features: t('aboutTabs.values.features', { returnObjects: true })
     },
     {
       id: 'team',
-      label: 'Our Team',
+      label: t('aboutTabs.team.label'),
       icon: Users,
-      title: 'Healthcare Technology Experts',
-      content: [
-        'Our diverse team combines deep healthcare expertise with cutting-edge technology skills.',
-        'We include former healthcare professionals, software engineers, data scientists, and industry veterans.',
-        'Together, we bring decades of experience in both healthcare operations and technology innovation.'
-      ],
-      features: [
-        'Former nurses and hospital administrators',
-        'Expert software engineers and developers',
-        'Data scientists and AI specialists',
-        'Healthcare industry thought leaders'
-      ]
+      title: t('aboutTabs.team.title'),
+      content: t('aboutTabs.team.content', { returnObjects: true }),
+      features: t('aboutTabs.team.features', { returnObjects: true })
     }
   ];
 
@@ -82,11 +48,10 @@ const AboutTabs = () => {
       <div className="container-custom">
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
-            About InSite Health System
+            {t('aboutTabs.title')}
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Learn more about our mission, vision, values, and the dedicated team behind 
-            our innovative healthcare technology solutions.
+            {t('aboutTabs.subtitle')}
           </p>
         </div>
 
@@ -138,7 +103,7 @@ const AboutTabs = () => {
                   {/* Features List */}
                   <div>
                     <h4 className="text-xl font-semibold text-gray-800 mb-4">
-                      Key Highlights:
+                      {t('aboutTabs.keyHighlights')}
                     </h4>
                     <div className="grid sm:grid-cols-2 gap-3">
                       {currentTab.features.map((feature, index) => (
@@ -177,12 +142,7 @@ const AboutTabs = () => {
 
         {/* Statistics Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16">
-          {[
-            { number: '500+', label: 'Healthcare Facilities' },
-            { number: '50k+', label: 'Equipment Tracked' },
-            { number: '99.9%', label: 'System Uptime' },
-            { number: '24/7', label: 'Support Available' }
-          ].map((stat, index) => (
+          {t('aboutTabs.stats', { returnObjects: true }).map((stat, index) => (
             <div key={index} className="text-center">
               <div className="text-3xl md:text-4xl font-bold text-insite-blue mb-2">
                 {stat.number}

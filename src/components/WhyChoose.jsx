@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import Modal from 'react-modal';
 import { 
   Play, 
@@ -17,47 +18,15 @@ if (typeof window !== 'undefined') {
 }
 
 const WhyChoose = () => {
+  const { t } = useTranslation();
   const [isVideoOpen, setIsVideoOpen] = useState(false);
 
-  const features = [
-    {
-      icon: Shield,
-      title: 'Privacy & Security First',
-      description: 'HIPAA-compliant solutions with end-to-end encryption and robust security protocols.'
-    },
-    {
-      icon: Clock,
-      title: 'Real-Time Visibility',
-      description: 'Instant equipment location and status updates across your entire healthcare facility.'
-    },
-    {
-      icon: Users,
-      title: 'Easy Integration',
-      description: 'Seamless integration with existing hospital management systems and workflows.'
-    },
-    {
-      icon: TrendingUp,
-      title: 'Improved Efficiency',
-      description: 'Reduce equipment search time by up to 80% and optimize utilization rates.'
-    },
-    {
-      icon: Award,
-      title: 'Proven Results',
-      description: 'Trusted by 500+ healthcare facilities worldwide with measurable ROI.'
-    },
-    {
-      icon: HeadphonesIcon,
-      title: '24/7 Support',
-      description: 'Round-the-clock technical support and customer success team availability.'
-    }
-  ];
+  const features = t('whyChoose.features', { returnObjects: true }) || [];
+  const stats = t('whyChoose.stats', { returnObjects: true }) || [];
+  const testimonial = t('whyChoose.testimonial', { returnObjects: true }) || {};
 
-  const stats = [
-    { number: '80%', label: 'Reduction in Equipment Search Time' },
-    { number: '95%', label: 'User Satisfaction Rate' },
-    { number: '40%', label: 'Improvement in Equipment Utilization' },
-    { number: '99.9%', label: 'System Uptime Guarantee' }
-  ];
+  // Icons for features (in order)
+  const featureIcons = [Shield, Clock, Users, TrendingUp, Award, HeadphonesIcon];
 
   return (
     <section className="section-padding bg-background-section">
@@ -66,20 +35,18 @@ const WhyChoose = () => {
           {/* Left Side - Content */}
           <div>
             <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">
-              Why Choose 
-              <span className="text-insite-blue"> InSite Health System?</span>
+              {t('whyChoose.title')}
+              <span className="text-insite-blue">{t('whyChoose.titleHighlight')}</span>
             </h2>
             
             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
-              Our comprehensive equipment visibility platform is designed specifically for 
-              healthcare environments, ensuring reliability, security, and ease of use that 
-              medical professionals can trust.
+              {t('whyChoose.subtitle')}
             </p>
 
             {/* Features Grid */}
             <div className="grid sm:grid-cols-2 gap-6 mb-8">
               {features.map((feature, index) => {
-                const IconComponent = feature.icon;
+                const IconComponent = featureIcons[index];
                 return (
                   <div key={index} className="flex items-start gap-4">
                     <div className="w-12 h-12 bg-insite-blue/10 rounded-xl flex items-center justify-center flex-shrink-0">
@@ -104,13 +71,13 @@ const WhyChoose = () => {
                 href="#contact"
                 className="btn-primary inline-flex items-center justify-center"
               >
-                Get Started Today
+                {t('whyChoose.getStarted')}
               </a>
               <a
                 href="#demo"
                 className="btn-outline inline-flex items-center justify-center"
               >
-                Schedule Demo
+                {t('whyChoose.scheduleDemo')}
               </a>
             </div>
           </div>
@@ -120,7 +87,7 @@ const WhyChoose = () => {
             {/* Video Thumbnail */}
             <div className="relative rounded-2xl overflow-hidden shadow-strong group cursor-pointer">
               <img
-                src="/assets/images/video-bg.jpg"
+                src="/assets/images/banner001.jpg"
                 alt="InSite Health System Overview Video"
                 className="w-full h-80 object-cover transition-transform duration-300 group-hover:scale-105"
                 onError={(e) => {
@@ -150,7 +117,7 @@ const WhyChoose = () => {
 
               {/* Video Badge */}
               <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-insite-blue px-4 py-2 rounded-full text-sm font-semibold">
-                2:30 Overview
+                {t('whyChoose.videoOverview')}
               </div>
             </div>
 
@@ -176,14 +143,12 @@ const WhyChoose = () => {
             <div className="text-center max-w-4xl mx-auto">
               <div className="text-4xl text-insite-cyan mb-6">"</div>
               <blockquote className="text-xl md:text-2xl text-gray-700 italic leading-relaxed mb-6">
-                InSite Health System has transformed how we manage our medical equipment. 
-                The real-time visibility and predictive analytics have significantly improved 
-                our operational efficiency and patient care quality.
+                {testimonial.quote}
               </blockquote>
               <div className="flex items-center justify-center gap-4">
                 <img
-                  src="/assets/images/testimonial-author.jpg"
-                  alt="Dr. Amanda Clarke"
+                  src="/assets/images/team-2.jpg"
+                  alt={testimonial.name}
                   className="w-16 h-16 rounded-full object-cover"
                   onError={(e) => {
                     // Fallback to initials
@@ -195,9 +160,9 @@ const WhyChoose = () => {
                   AC
                 </div>
                 <div className="text-left">
-                  <div className="font-semibold text-gray-800">Dr. Amanda Clarke</div>
-                  <div className="text-gray-600">Chief Operations Officer</div>
-                  <div className="text-insite-blue text-sm">Metro General Hospital</div>
+                  <div className="font-semibold text-gray-800">{testimonial.name}</div>
+                  <div className="text-gray-600">{testimonial.position}</div>
+                  <div className="text-insite-blue text-sm">{testimonial.organization}</div>
                 </div>
               </div>
             </div>
@@ -209,14 +174,14 @@ const WhyChoose = () => {
       <Modal
         isOpen={isVideoOpen}
         onRequestClose={() => setIsVideoOpen(false)}
-        contentLabel="InSite Health System Overview Video"
+        contentLabel={t('whyChoose.videoTitle')}
         className="fixed inset-4 md:inset-8 lg:inset-16 bg-black rounded-2xl overflow-hidden outline-none"
         overlayClassName="fixed inset-0 bg-black/80 flex items-center justify-center z-50"
       >
         <div className="relative h-full flex flex-col">
           {/* Modal Header */}
           <div className="flex justify-between items-center p-4 bg-black/20">
-            <h3 className="text-white font-semibold">InSite Health System Overview</h3>
+            <h3 className="text-white font-semibold">{t('whyChoose.videoTitle')}</h3>
             <button
               onClick={() => setIsVideoOpen(false)}
               className="text-white hover:text-gray-300 transition-colors p-2"
@@ -233,9 +198,9 @@ const WhyChoose = () => {
               <div className="w-full h-full bg-gray-900 rounded-lg flex items-center justify-center">
                 <div className="text-center text-white">
                   <Play size={64} className="mx-auto mb-4 opacity-50" />
-                  <p className="text-lg mb-2">Video Content Coming Soon</p>
+                  <p className="text-lg mb-2">{t('whyChoose.videoComingSoon')}</p>
                   <p className="text-gray-400">
-                    InSite Health System Overview - Real-time Equipment Visibility Demo
+                    {t('whyChoose.videoDesc')}
                   </p>
                 </div>
               </div>

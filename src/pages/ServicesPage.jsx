@@ -155,8 +155,8 @@ const ServicesPage = () => {
   return (
     <div className="min-h-screen bg-white">
       {/* Breadcrumb Section */}
-      <div className="bg-gradient-to-r from-primary to-secondary py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="bg-gradient-to-r from-insite-blue to-insite-blue/90 py-16">
+        <div className="container-custom">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Our Services
@@ -166,7 +166,7 @@ const ServicesPage = () => {
                 Home
               </Link>
               <span>/</span>
-              <span className="text-accent">Services</span>
+              <span className="text-insite-cyan">Services</span>
             </div>
           </div>
         </div>
@@ -174,9 +174,9 @@ const ServicesPage = () => {
 
       {/* Main Services Section */}
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="text-lg font-semibold text-accent mb-3 tracking-wide uppercase">
+            <h2 className="text-lg font-semibold text-insite-cyan mb-3 tracking-wide uppercase">
               Our Services
             </h2>
             <h3 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -194,13 +194,13 @@ const ServicesPage = () => {
               return (
                 <div 
                   key={service.id}
-                  className="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border border-gray-100 hover:border-primary/20"
+                  className="group bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border border-gray-100 hover:border-insite-blue/20"
                 >
                   <div className="mb-6">
-                    <div className="w-16 h-16 bg-gradient-to-r from-primary to-secondary rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                    <div className="w-16 h-16 bg-gradient-to-r from-insite-blue to-insite-blue/90 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
                       <IconComponent className="h-8 w-8 text-white" />
                     </div>
-                    <h4 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
+                    <h4 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-insite-blue transition-colors">
                       {service.title}
                     </h4>
                     <p className="text-gray-600 mb-4 leading-relaxed">
@@ -219,7 +219,7 @@ const ServicesPage = () => {
 
                   <Link 
                     to={service.link}
-                    className="inline-flex items-center text-primary font-semibold hover:text-secondary transition-colors group"
+                    className="inline-flex items-center text-insite-blue font-semibold hover:text-insite-blue/80 transition-colors group"
                   >
                     Learn More
                     <svg className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -235,9 +235,9 @@ const ServicesPage = () => {
 
       {/* Team Section */}
       <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="text-lg font-semibold text-accent mb-3 tracking-wide uppercase">
+            <h2 className="text-lg font-semibold text-insite-cyan mb-3 tracking-wide uppercase">
               Team Members
             </h2>
             <h3 className="text-4xl md:text-5xl font-bold text-gray-900">
@@ -257,29 +257,29 @@ const ServicesPage = () => {
                     alt={member.name}
                     className="w-full h-80 object-cover group-hover:scale-110 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="absolute inset-0 bg-gradient-to-t from-insite-blue/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                     <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-3">
                       <a 
                         href={member.social.facebook}
-                        className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors"
+                        className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-insite-blue hover:bg-insite-blue hover:text-white transition-colors"
                       >
                         <Users className="h-4 w-4" />
                       </a>
                       <a 
                         href={member.social.twitter}
-                        className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors"
+                        className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-insite-blue hover:bg-insite-blue hover:text-white transition-colors"
                       >
                         <Share2 className="h-4 w-4" />
                       </a>
                       <a 
                         href={member.social.instagram}
-                        className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors"
+                        className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-insite-blue hover:bg-insite-blue hover:text-white transition-colors"
                       >
                         <ExternalLink className="h-4 w-4" />
                       </a>
                       <a 
                         href={member.social.youtube}
-                        className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors"
+                        className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-insite-blue hover:bg-insite-blue hover:text-white transition-colors"
                       >
                         <Play className="h-4 w-4" />
                       </a>
@@ -291,7 +291,7 @@ const ServicesPage = () => {
                   <h4 className="text-xl font-bold text-gray-900 mb-2">
                     {member.name}
                   </h4>
-                  <p className="text-primary font-medium">
+                  <p className="text-insite-blue font-medium">
                     {member.role}
                   </p>
                 </div>
@@ -303,9 +303,9 @@ const ServicesPage = () => {
 
       {/* Working Process Section */}
       <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="text-lg font-semibold text-accent mb-3 tracking-wide uppercase">
+            <h2 className="text-lg font-semibold text-insite-cyan mb-3 tracking-wide uppercase">
               Company Process
             </h2>
             <h3 className="text-4xl md:text-5xl font-bold text-gray-900">
@@ -320,15 +320,15 @@ const ServicesPage = () => {
                 className="group text-center relative"
               >
                 <div className="relative mb-6">
-                  <div className="w-20 h-20 bg-gradient-to-r from-primary to-secondary rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
+                  <div className="w-20 h-20 bg-gradient-to-r from-insite-blue to-insite-blue/90 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300">
                     <Clipboard className="h-8 w-8 text-white" />
                   </div>
-                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-accent rounded-full flex items-center justify-center text-white font-bold text-sm">
+                  <div className="absolute -top-2 -right-2 w-8 h-8 bg-insite-cyan rounded-full flex items-center justify-center text-white font-bold text-sm">
                     {process.step}
                   </div>
                 </div>
                 
-                <h4 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors">
+                <h4 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-insite-blue transition-colors">
                   {process.title}
                 </h4>
                 <p className="text-gray-600 leading-relaxed">
@@ -338,7 +338,7 @@ const ServicesPage = () => {
                 {/* Connect line for larger screens */}
                 {index < workingProcess.length - 1 && (
                   <div className="hidden lg:block absolute top-10 left-full w-full h-0.5 bg-gray-200 transform -translate-y-1/2 z-0">
-                    <div className="absolute right-0 w-2 h-2 bg-primary rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
+                    <div className="absolute right-0 w-2 h-2 bg-insite-blue rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
                   </div>
                 )}
               </div>
@@ -349,9 +349,9 @@ const ServicesPage = () => {
 
       {/* Testimonials Section */}
       <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="container-custom">
           <div className="text-center mb-16">
-            <h2 className="text-lg font-semibold text-accent mb-3 tracking-wide uppercase">
+            <h2 className="text-lg font-semibold text-insite-cyan mb-3 tracking-wide uppercase">
               Client Testimonials
             </h2>
             <h3 className="text-4xl md:text-5xl font-bold text-gray-900">
@@ -364,7 +364,7 @@ const ServicesPage = () => {
       </section>
 
       {/* Call to Action Section */}
-      <section className="py-20 bg-gradient-to-r from-primary to-secondary">
+      <section className="py-20 bg-gradient-to-r from-insite-blue to-insite-blue/90">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
             Ready to Transform Your Healthcare Operations?
@@ -376,13 +376,13 @@ const ServicesPage = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link 
               to="/contact"
-              className="bg-white text-primary px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
+              className="bg-white text-insite-blue px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors inline-flex items-center justify-center"
             >
               Get Started Today
             </Link>
             <Link 
               to="/about"
-              className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-primary transition-colors inline-flex items-center justify-center"
+              className="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-insite-blue transition-colors inline-flex items-center justify-center"
             >
               Learn More About Us
             </Link>

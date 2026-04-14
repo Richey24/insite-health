@@ -16,6 +16,7 @@ import BlogSingle from './pages/BlogSingle'
 import LoginPage from './pages/LoginPage'
 import BlogManagement from './pages/BlogManagement'
 import BlogEditor from './pages/BlogEditor'
+import UserManagement from './pages/UserManagement'
 import AssetTracking from './pages/services/AssetTracking'
 import MobileSecurity from './pages/services/MobileSecurity'
 import CapitalPlanning from './pages/services/CapitalPlanning'
@@ -163,6 +164,11 @@ function App() {
             <Route path="/blog/manage/edit/:id" element={
               <ProtectedRoute requiredRole="author">
                 <BlogEditor />
+              </ProtectedRoute>
+            } />
+            <Route path="/blog/manage/users" element={
+              <ProtectedRoute requiredRole="admin">
+                <UserManagement />
               </ProtectedRoute>
             } />
           </Routes>

@@ -9,6 +9,7 @@ import {
   Search, 
   Calendar,
   User,
+  Users,
   BarChart3,
   LogOut,
   AlertCircle,
@@ -181,6 +182,11 @@ const BlogManagement = () => {
               <Link to="/blog" className="text-gray-600 hover:text-gray-900 transition-colors">
                 <Eye className="h-5 w-5" />
               </Link>
+              {hasPermission('admin') && (
+                <Link to="/blog/manage/users" className="text-gray-600 hover:text-insite-blue transition-colors" title="Manage Users">
+                  <Users className="h-5 w-5" />
+                </Link>
+              )}
               <div className="flex items-center space-x-2">
                 <img
                   src={user?.avatar || '/assets/images/team-1.jpg'}
@@ -259,8 +265,8 @@ const BlogManagement = () => {
                       className="text-sm border border-insite-blue/40 bg-white text-gray-700 rounded px-2 py-1 focus:ring-2 focus:ring-insite-blue focus:border-transparent cursor-pointer"
                     >
                       <option value="" disabled>Bulk Actions</option>
-                      <option value="publish">Publish</option>
-                      <option value="draft">Move to Draft</option>
+                      {hasPermission('editor') && <option value="publish">Publish</option>}
+                      {hasPermission('editor') && <option value="draft">Move to Draft</option>}
                       {hasPermission('admin') && <option value="delete">Delete</option>}
                     </select>
                     <button

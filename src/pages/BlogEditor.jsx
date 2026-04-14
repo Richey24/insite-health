@@ -158,10 +158,12 @@ const BlogEditor = () => {
 
       {/* Editor */}
       <MultiLanguageBlogEditor
+        key={initialData?._id || 'new'}
         initialData={initialData}
         onSave={handleSave}
         onCancel={handleCancel}
         isEditing={!!id}
+        canPublish={user?.role === 'editor' || user?.role === 'admin'}
       />
     </div>
   );

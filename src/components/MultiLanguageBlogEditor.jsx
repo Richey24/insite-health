@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { supportedLanguages } from '../i18n';
+import { useAuth } from '../contexts/AuthContext';
 import {
   Globe, X, Bold, Italic, Strikethrough, Code, List, ListOrdered,
   Quote, Minus, Undo, Redo, Heading1, Heading2, Heading3,
   Image as ImageIcon, Upload, Eye, EyeOff, ChevronDown, ChevronUp,
   Tag, Plus, Check, Clock, Calendar, User, Link2, Search,
-  AlertCircle, CheckCircle2, Trash2
+  AlertCircle, CheckCircle2, Trash2, Loader2
 } from 'lucide-react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -27,13 +28,6 @@ const PREDEFINED_CATEGORIES = [
   { slug: 'patient-safety',        label: 'Patient Safety' },
   { slug: 'case-study',            label: 'Case Study' },
   { slug: 'technology',            label: 'Technology' },
-];
-
-const MOCK_AUTHORS = [
-  { name: 'Dr. Sarah Mitchell',   slug: 'sarah-mitchell',   avatar: '/assets/images/team-1.jpg' },
-  { name: 'Dr. Michael Rodriguez', slug: 'michael-rodriguez', avatar: '/assets/images/team-2.jpg' },
-  { name: 'Emily Rodriguez',       slug: 'emily-rodriguez',   avatar: '/assets/images/team-3.jpg' },
-  { name: 'James Wilson',          slug: 'james-wilson',      avatar: '/assets/images/team-4.jpg' },
 ];
 
 const toSlug = (str) =>
@@ -222,24 +216,42 @@ const TagInput = ({ tags, onChange }) => {
 // ─────────────────────────────────────────────
 // Featured Image panel
 // ─────────────────────────────────────────────
-const FeaturedImagePanel = ({ t, featuredImage, onChange }) => {
+const FeaturedImagePanel = ({ t, featuredImage, onChange, authFetch }) => {
   const fileRef = useRef();
   const [urlInput, setUrlInput] = useState(featuredImage?.url || '');
   const [dragOver, setDragOver] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+
+  const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 
   // Keep url input in sync if parent resets
   useEffect(() => { setUrlInput(featuredImage?.url || ''); }, [featuredImage?.url]);
 
   const applyUrl = () => onChange({ ...featuredImage, url: urlInput.trim() });
 
-  const handleFile = (file) => {
+  const handleFile = async (file) => {
     if (!file || !file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      onChange({ ...featuredImage, url: e.target.result });
-      setUrlInput(e.target.result);
-    };
-    reader.readAsDataURL(file);
+    setUploadError('');
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+      const res = await authFetch(`${API_BASE}/api/upload/image`, {
+        method: 'POST',
+        body: formData,
+        // Do NOT set Content-Type — browser sets it with boundary for multipart
+        headers: {},
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed.');
+      onChange({ ...featuredImage, url: data.url });
+      setUrlInput(data.url);
+    } catch (err) {
+      setUploadError(err.message);
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
@@ -275,19 +287,33 @@ const FeaturedImagePanel = ({ t, featuredImage, onChange }) => {
       ) : (
         <div
           className={`border-2 border-dashed rounded-lg p-5 text-center cursor-pointer transition-colors ${
+            uploading ? 'border-insite-blue bg-insite-blue/5 cursor-wait' :
             dragOver ? 'border-insite-blue bg-insite-blue/5' : 'border-gray-300 hover:border-insite-blue/60 hover:bg-gray-50'
           }`}
-          onClick={() => fileRef.current?.click()}
+          onClick={() => !uploading && fileRef.current?.click()}
           onDragOver={e => { e.preventDefault(); setDragOver(true); }}
           onDragLeave={() => setDragOver(false)}
           onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}
         >
-          <Upload className="h-7 w-7 mx-auto mb-2 text-gray-400" />
-          <p className="text-xs text-gray-500 font-medium">{t('editor.featuredImageDrop')}</p>
-          <p className="text-xs text-gray-400 mt-0.5">{t('editor.featuredImageFormats')}</p>
+          {uploading ? (
+            <>
+              <Loader2 className="h-7 w-7 mx-auto mb-2 text-insite-blue animate-spin" />
+              <p className="text-xs text-insite-blue font-medium">Uploading...</p>
+            </>
+          ) : (
+            <>
+              <Upload className="h-7 w-7 mx-auto mb-2 text-gray-400" />
+              <p className="text-xs text-gray-500 font-medium">{t('editor.featuredImageDrop')}</p>
+              <p className="text-xs text-gray-400 mt-0.5">{t('editor.featuredImageFormats')}</p>
+            </>
+          )}
         </div>
       )}
       <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={e => handleFile(e.target.files[0])} />
+
+      {uploadError && (
+        <p className="text-xs text-red-500 flex items-center gap-1"><AlertCircle className="h-3 w-3" />{uploadError}</p>
+      )}
 
       {/* URL input */}
       <Field label={t('editor.featuredImageUrl')}>
@@ -383,7 +409,7 @@ const CategoriesPanel = ({ t, categories, allCategories, onChange, onAddCategory
 // ─────────────────────────────────────────────
 // Author panel
 // ─────────────────────────────────────────────
-const AuthorPanel = ({ t, author, onChange }) => {
+const AuthorPanel = ({ t, author, onChange, authors = [] }) => {
   const [showCustom, setShowCustom] = useState(false);
 
   const selectAuthor = (a) => {
@@ -395,19 +421,25 @@ const AuthorPanel = ({ t, author, onChange }) => {
     <SidebarPanel title={t('editor.authorPanel')} icon={User}>
       {/* Quick-select */}
       <div className="space-y-1.5">
-        {MOCK_AUTHORS.map(a => (
+        {authors.length === 0 && (
+          <p className="text-xs text-gray-400 italic">No users loaded — use custom author below.</p>
+        )}
+        {authors.map(a => (
           <button
-            key={a.slug}
+            key={a._id || a.slug}
             type="button"
-            onClick={() => selectAuthor(a)}
+            onClick={() => selectAuthor({ name: a.name, slug: a.slug, avatar: a.avatar || '/assets/images/team-1.jpg' })}
             className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg border transition-colors text-left ${
               author?.slug === a.slug
                 ? 'border-insite-blue bg-insite-blue/5'
                 : 'border-gray-200 hover:border-insite-blue/50 hover:bg-gray-50'
             }`}
           >
-            <img src={a.avatar} alt={a.name} className="w-7 h-7 rounded-full object-cover flex-shrink-0" />
-            <span className="text-sm text-gray-800 truncate">{a.name}</span>
+            <img src={a.avatar || '/assets/images/team-1.jpg'} alt={a.name} className="w-7 h-7 rounded-full object-cover flex-shrink-0" />
+            <div className="flex-1 min-w-0">
+              <span className="text-sm text-gray-800 truncate block">{a.name}</span>
+              <span className="text-xs text-gray-400 capitalize">{a.role}</span>
+            </div>
             {author?.slug === a.slug && <Check className="h-3.5 w-3.5 text-insite-blue ml-auto flex-shrink-0" />}
           </button>
         ))}
@@ -452,7 +484,7 @@ const AuthorPanel = ({ t, author, onChange }) => {
 // ─────────────────────────────────────────────
 // Publish panel
 // ─────────────────────────────────────────────
-const PublishPanel = ({ t, status, publishDate, isEditing, onSaveDraft, onPublish, onSwitchToDraft }) => {
+const PublishPanel = ({ t, status, publishDate, isEditing, onSaveDraft, onPublish, onSwitchToDraft, canPublish }) => {
   const statusColors = {
     draft:     'bg-yellow-100 text-yellow-800',
     published: 'bg-green-100  text-green-800',
@@ -495,10 +527,12 @@ const PublishPanel = ({ t, status, publishDate, isEditing, onSaveDraft, onPublis
           className="w-full px-3 py-2 border border-insite-blue text-insite-blue rounded-lg text-sm font-medium hover:bg-insite-blue/5 transition-colors">
           {t('editor.saveDraft')}
         </button>
-        <button type="button" onClick={onPublish}
-          className="w-full px-3 py-2 bg-insite-blue text-white rounded-lg text-sm font-medium hover:bg-insite-blue/90 transition-colors">
-          {isEditing ? t('editor.updatePost') : t('editor.publishNow')}
-        </button>
+        {canPublish && (
+          <button type="button" onClick={onPublish}
+            className="w-full px-3 py-2 bg-insite-blue text-white rounded-lg text-sm font-medium hover:bg-insite-blue/90 transition-colors">
+            {isEditing ? t('editor.updatePost') : t('editor.publishNow')}
+          </button>
+        )}
       </div>
     </SidebarPanel>
   );
@@ -609,8 +643,19 @@ const PermalinkBar = ({ t, slug, onChange }) => {
 // ─────────────────────────────────────────────
 // Main component
 // ─────────────────────────────────────────────
-const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing }) => {
+const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing, canPublish = false }) => {
   const { t } = useTranslation();
+  const { authFetch } = useAuth();
+
+  // ── Real authors from API ──
+  const [authors, setAuthors] = useState([]);
+  useEffect(() => {
+    authFetch(`${import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000'}/api/auth/users`)
+      .then(r => r.json())
+      .then(d => { if (d.success) setAuthors(d.data); })
+      .catch(() => {}); // fail silently — custom author entry still works
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // ── Language-specific content ──
   const [currentLangCode, setCurrentLangCode] = useState('en');
@@ -624,7 +669,7 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing }) =
   const [featuredImage, setFeaturedImage] = useState(initialData?.featuredImage || { url: '', altText: '' });
   const [categories,    setCategories]    = useState(initialData?.categories    || []);
   const [allCategories, setAllCategories] = useState(PREDEFINED_CATEGORIES);
-  const [author,        setAuthor]        = useState(initialData?.author        || MOCK_AUTHORS[0]);
+  const [author,        setAuthor]        = useState(initialData?.author        || null);
 
   // Sync when parent loads data (e.g. after async fetch)
   useEffect(() => {
@@ -847,6 +892,7 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing }) =
             status={status}
             publishDate={publishDate}
             isEditing={isEditing}
+            canPublish={canPublish}
             onSaveDraft={handleSaveDraft}
             onPublish={handlePublish}
             onSwitchToDraft={handleSwitchDraft}
@@ -868,6 +914,7 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing }) =
             t={t}
             featuredImage={featuredImage}
             onChange={setFeaturedImage}
+            authFetch={authFetch}
           />
 
           {/* Categories */}
@@ -884,6 +931,7 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing }) =
             t={t}
             author={author}
             onChange={setAuthor}
+            authors={authors}
           />
 
           {/* Publish date (shown when scheduling) */}
@@ -895,8 +943,8 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing }) =
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent"
               >
                 <option value="draft">Draft</option>
-                <option value="published">Published</option>
-                <option value="scheduled">Scheduled</option>
+                {canPublish && <option value="published">Published</option>}
+                {canPublish && <option value="scheduled">Scheduled</option>}
                 <option value="archived">Archived</option>
               </select>
             </Field>

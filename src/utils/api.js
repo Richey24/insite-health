@@ -1,10 +1,10 @@
 // API utility functions for REST API endpoints
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.insitehealthsystem.com';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 
 // Generic API request function
 async function apiRequest(endpoint, options = {}) {
-  const url = `${API_BASE_URL}${endpoint}`;
+  const url = `${API_BASE_URL}/api${endpoint}`;
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -13,22 +13,14 @@ async function apiRequest(endpoint, options = {}) {
     ...options,
   };
 
-  try {
-    const response = await fetch(url, config);
-    
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    return { success: true, data };
-  } catch (error) {
-    console.error('API request failed:', error);
-    return { 
-      success: false, 
-      error: error.message || 'An error occurred while processing your request' 
-    };
+  const response = await fetch(url, config);
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || `Request failed with status ${response.status}`);
   }
+
+  return data;
 }
 
 // Submit appointment form

@@ -201,12 +201,43 @@ const ContactPage = () => {
                     <div>
                       <input
                         type="email"
-                        placeholder="Email or Phone*"
+                        placeholder="Email*"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                         {...registerAppointment('email')}
                       />
                       {appointmentErrors.email && (
                         <p className="text-red-500 text-sm mt-1">{appointmentErrors.email.message}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <input
+                        type="tel"
+                        placeholder="Phone*"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
+                        {...registerAppointment('phone')}
+                      />
+                      {appointmentErrors.phone && (
+                        <p className="text-red-500 text-sm mt-1">{appointmentErrors.phone.message}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <select
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
+                        {...registerAppointment('appointmentType')}
+                      >
+                        <option value="">Select Service*</option>
+                        <option value="Asset Tracking">Asset Tracking</option>
+                        <option value="Site Monitoring">Site Monitoring</option>
+                        <option value="Capital Planning">Capital Planning</option>
+                        <option value="Mobile Security">Mobile Security</option>
+                        <option value="Pilot Consultation">Pilot Consultation</option>
+                      </select>
+                      {appointmentErrors.appointmentType && (
+                        <p className="text-red-500 text-sm mt-1">{appointmentErrors.appointmentType.message}</p>
                       )}
                     </div>
                     
@@ -217,33 +248,6 @@ const ContactPage = () => {
                         min={today}
                         {...registerAppointment('preferredDate')}
                       />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <select 
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
-                        {...registerAppointment('gender')}
-                      >
-                        <option value="">Select Gender*</option>
-                        <option value="female">Female</option>
-                        <option value="male">Male</option>
-                        <option value="other">Other</option>
-                      </select>
-                    </div>
-                    
-                    <div>
-                      <select 
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
-                        {...registerAppointment('department')}
-                      >
-                        <option value="">Select Department*</option>
-                        <option value="diagnosis">Diagnosis</option>
-                        <option value="neurology">Neurology</option>
-                        <option value="pregnancy">Pregnancy</option>
-                        <option value="cardiology">Cardiology</option>
-                      </select>
                     </div>
                   </div>
 

@@ -17,11 +17,9 @@ export const appointmentSchema = yup.object({
   organization: yup
     .string(),
   patientType: yup
-    .string()
-    .required('Please select patient type'),
+    .string(),
   gender: yup
-    .string()
-    .required('Please select gender'),
+    .string(),
   department: yup
     .string(),
   appointmentType: yup

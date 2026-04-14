@@ -1,66 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, Clock, ArrowRight, User } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { submitNewsletter } from '../utils/api';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 
 const Blog = () => {
   const { t } = useTranslation();
   const [activeCategory, setActiveCategory] = useState('all');
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterStatus, setNewsletterStatus] = useState(null); // null | 'loading' | 'success' | 'error'
+  const [blogPosts, setBlogPosts] = useState([]);
+  const [postsLoading, setPostsLoading] = useState(true);
 
-  const blogPosts = [
-    {
-      id: 1,
-      slug: 'future-healthcare-technology-ai-ml',
-      title: "5 Ways Real-Time Equipment Tracking Improves Patient Safety",
-      excerpt: "Discover how modern equipment visibility solutions directly impact patient outcomes and safety metrics in healthcare facilities.",
-      image: "/assets/images/themex-blog-1.jpg",
-      category: "patient-safety",
-      categoryLabel: "Patient Safety",
-      author: "Dr. Sarah Johnson",
-      date: "March 15, 2024",
-      readTime: "5 min read",
-      featured: true
-    },
-    {
-      id: 2,
-      slug: 'telemedicine-digital-health-transformation',
-      title: "ROI Analysis: The Financial Impact of Equipment Management Systems",
-      excerpt: "A comprehensive breakdown of cost savings and efficiency gains from implementing automated equipment tracking solutions.",
-      image: "/assets/images/themex-blog-2.jpg",
-      category: "healthcare-economics",
-      categoryLabel: "Healthcare Economics",
-      author: "Michael Chen",
-      date: "March 12, 2024",
-      readTime: "7 min read"
-    },
-    {
-      id: 3,
-      slug: 'hipaa-compliance-digital-health-guidelines',
-      title: "HIPAA Compliance in Healthcare IoT: What You Need to Know",
-      excerpt: "Essential guidelines for maintaining patient privacy and data security when implementing IoT solutions in healthcare.",
-      image: "/assets/images/themex-blog-3.jpg",
-      category: "compliance",
-      categoryLabel: "Compliance",
-      author: "Emily Rodriguez",
-      date: "March 10, 2024",
-      readTime: "6 min read"
-    },
-    {
-      id: 4,
-      slug: 'asset-tracking-hospital-efficiency',
-      title: "Case Study: Metro General Hospital's Equipment Optimization Journey",
-      excerpt: "How a 500-bed hospital reduced equipment search time by 75% and improved staff efficiency with InSite Health System.",
-      image: "/assets/images/themex-blog-4.jpg",
-      category: "case-study",
-      categoryLabel: "Case Study",
-      author: "James Wilson",
-      date: "March 8, 2024",
-      readTime: "8 min read"
-    }
-  ];
+  useEffect(() => {
+    setPostsLoading(true);
+    fetch(`${API_BASE_URL}/api/blog/posts?status=published&limit=4`)
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (!data) return;
+        const posts = (data.data || data.posts || []).map((p, i) => ({
+          id: p._id || p.id,
+          slug: p.slug,
+          title: p.content?.en?.title || p.title || '',
+          excerpt: p.content?.en?.excerpt || p.excerpt || '',
+          image: p.featuredImage?.url || p.featuredImage || `/assets/images/themex-blog-${(i % 4) + 1}.jpg`,
+          category: (p.categories || [])[0] || 'general',
+          categoryLabel: (p.categories || [])[0] || 'General',
+          author: p.author?.name || 'InSite Team',
+          date: p.publishedAt
+            ? new Date(p.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            : '',
+          readTime: p.readTime || '',
+          featured: i === 0,
+        }));
+        setBlogPosts(posts);
+      })
+      .catch(() => {})
+      .finally(() => setPostsLoading(false));
+  }, []);
 
   const categories = [
     { slug: 'all', label: t('blog.allPosts', 'All Posts') },
@@ -123,7 +102,11 @@ const Blog = () => {
         </div>
 
         {/* Featured Post */}
-        {featuredPost && (
+        {postsLoading ? (
+          <div className="mb-16 animate-pulse">
+            <div className="bg-gray-200 rounded-2xl h-64 lg:h-80 w-full" />
+          </div>
+        ) : featuredPost && (
           <div className="mb-16">
             <div className="bg-gradient-to-r from-insite-blue to-insite-cyan rounded-2xl p-2">
               <div className="bg-white rounded-xl overflow-hidden">
@@ -188,7 +171,13 @@ const Blog = () => {
         )}
 
         {/* Blog Grid */}
-        {gridPosts.length > 0 ? (
+        {postsLoading ? (
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8 animate-pulse">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="bg-gray-200 rounded-2xl h-64" />
+            ))}
+          </div>
+        ) : gridPosts.length > 0 ? (
           <div className="grid lg:grid-cols-3 md:grid-cols-2 gap-8">
             {gridPosts.map((post) => (
               <article key={post.id} className="group cursor-pointer">

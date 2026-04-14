@@ -187,16 +187,16 @@ const Footer = () => {
               <div className="flex items-center gap-3">
                 <MapPin className="text-insite-cyan flex-shrink-0" size={18} />
                 <span className="text-gray-300">
-                  123 Healthcare Technology Blvd, Suite 500, Medical District, CA 90210
+                  2287 Dunlop St. San Diego, CA 92111
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="text-insite-cyan flex-shrink-0" size={18} />
-                <span className="text-gray-300">(555) 123-4567</span>
+                <a href="tel:+18583663838" className="text-gray-300 hover:text-insite-cyan transition-colors">(858) 366-3838</a>
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="text-insite-cyan flex-shrink-0" size={18} />
-                <span className="text-gray-300">info@insitehealth.com</span>
+                <a href="mailto:info@insitehealthsystems.com" className="text-gray-300 hover:text-insite-cyan transition-colors">info@insitehealthsystems.com</a>
               </div>
             </div>
           </div>

@@ -81,13 +81,13 @@ const Header = () => {
           <div className="flex justify-between items-center flex-wrap">
             <div className="flex items-center space-x-2">
               <Phone className="w-4 h-4" />
-              <a href="tel:+(99)125696889788" className="text-sm hover:text-insite-cyan transition-colors">
-                +(99) 125 696 889 788
+              <a href="tel:+18583663838" className="text-sm hover:text-insite-cyan transition-colors">
+                (858) 366-3838
               </a>
             </div>
             <div className="flex space-x-6 text-sm">
               <Link to="/contact" className="hover:text-insite-cyan transition-colors">{t('header.helpDesk')}</Link>
-              <a href="tel:+15551234568" className="hover:text-insite-cyan transition-colors">{t('header.emergency')}</a>
+              <a href="tel:+18583663838" className="hover:text-insite-cyan transition-colors">{t('header.emergency')}</a>
               <Link to="/contact" className="hover:text-insite-cyan transition-colors">{t('nav.contact')}</Link>
             </div>
           </div>

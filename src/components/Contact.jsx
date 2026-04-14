@@ -118,7 +118,7 @@ const Contact = () => {
                   <div>
                     <h4 className="font-semibold text-gray-800 mb-1">{t('contact.address', 'Address')}</h4>
                     <p className="text-gray-600 whitespace-pre-line">
-                      {t('contact.contactDetails.addressFull', '123 Healthcare Technology Blvd\nSuite 500\nMedical District, CA 90210')}
+                      {t('contact.contactDetails.addressFull', '2287 Dunlop St.\nSan Diego, CA 92111')}
                     </p>
                   </div>
                 </div>
@@ -130,8 +130,7 @@ const Contact = () => {
                   <div>
                     <h4 className="font-semibold text-gray-800 mb-1">{t('contact.phone', 'Phone')}</h4>
                     <p className="text-gray-600">
-                      {t('contact.contactDetails.salesPhone', 'Sales: (555) 123-4567')}<br />
-                      {t('contact.contactDetails.supportPhone', 'Support: (555) 123-4568')}
+                      {t('contact.contactDetails.salesPhone', 'Phone: (858) 366-3838')}
                     </p>
                   </div>
                 </div>
@@ -143,8 +142,7 @@ const Contact = () => {
                   <div>
                     <h4 className="font-semibold text-gray-800 mb-1">{t('contact.email', 'Email')}</h4>
                     <p className="text-gray-600">
-                      {t('contact.contactDetails.salesEmail', 'sales@insitehealth.com')}<br />
-                      {t('contact.contactDetails.supportEmail', 'support@insitehealth.com')}
+                      {t('contact.contactDetails.email', 'info@insitehealthsystems.com')}
                     </p>
                   </div>
                 </div>

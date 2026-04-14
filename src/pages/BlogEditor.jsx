@@ -32,17 +32,13 @@ const BlogEditor = () => {
 
       if (id) {
         try {
-          // Fetch existing post by ID — use slug-less admin endpoint via id
-          const res = await authFetch(`${API_BASE}/api/blog/posts?status=all&limit=200`);
+          const res = await authFetch(`${API_BASE}/api/blog/posts/id/${id}`);
           const data = await res.json();
 
           if (res.ok && data.success) {
-            const post = data.data.find((p) => p._id === id);
-            if (post) {
-              setInitialData(post);
-              setIsLoading(false);
-              return;
-            }
+            setInitialData(data.data);
+            setIsLoading(false);
+            return;
           }
         } catch (err) {
           console.error('Failed to load post:', err.message);

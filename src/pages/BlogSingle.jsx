@@ -49,6 +49,7 @@ const BlogSingle = () => {
   const [recentPosts, setRecentPosts] = useState([]);
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState({ name: '', email: '', website: '', comment: '' });
+  const [commentStatus, setCommentStatus] = useState(null); // null | 'loading' | 'success' | 'error'
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
 
@@ -116,6 +117,17 @@ const BlogSingle = () => {
       .catch(() => {});
   }, [slug, currentLanguage]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Fetch approved comments for this post
+  useEffect(() => {
+    if (!slug) return;
+    fetch(`${API_BASE_URL}/api/blog/posts/${slug}/comments`)
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (data?.data) setComments(data.data);
+      })
+      .catch(() => {});
+  }, [slug]);
+
   const categories = [
     { name: t('blog.categories.healthcareTech'), count: 15 },
     { name: t('blog.categories.digitalHealth'), count: 12 },
@@ -135,10 +147,23 @@ const BlogSingle = () => {
     return d.toLocaleDateString(i18n.language, { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
-  const handleCommentSubmit = (e) => {
+  const handleCommentSubmit = async (e) => {
     e.preventDefault();
-    setComments([...comments, { id: Date.now(), ...newComment, date: new Date(), approved: false }]);
-    setNewComment({ name: '', email: '', website: '', comment: '' });
+    setCommentStatus('loading');
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/blog/posts/${slug}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newComment),
+      });
+      if (!res.ok) throw new Error('Failed');
+      setCommentStatus('success');
+      setNewComment({ name: '', email: '', website: '', comment: '' });
+      setTimeout(() => setCommentStatus(null), 6000);
+    } catch {
+      setCommentStatus('error');
+      setTimeout(() => setCommentStatus(null), 5000);
+    }
   };
 
   const handleShare = (platform) => {
@@ -350,6 +375,33 @@ const BlogSingle = () => {
                   </div>
                 </div>
 
+                {/* Approved Comments */}
+                {comments.length > 0 && (
+                  <div className="mt-12">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-6">
+                      {t('blog.comments')} ({comments.length})
+                    </h3>
+                    <div className="space-y-6">
+                      {comments.map((c) => (
+                        <div key={c.id || c._id} className="bg-gray-50 rounded-xl p-5">
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className="w-9 h-9 rounded-full bg-insite-blue flex items-center justify-center text-white font-bold text-sm">
+                              {c.name.charAt(0).toUpperCase()}
+                            </div>
+                            <div>
+                              <span className="font-semibold text-gray-900 text-sm">{c.name}</span>
+                              <p className="text-xs text-gray-500">
+                                {new Date(c.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                              </p>
+                            </div>
+                          </div>
+                          <p className="text-gray-700 text-sm leading-relaxed">{c.comment}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Comment Form */}
                 <div className="mt-12">
                   <h3 className="text-2xl font-bold text-gray-900 mb-6">{t('blog.leaveComment')}</h3>
@@ -410,9 +462,23 @@ const BlogSingle = () => {
                       />
                     </div>
 
-                    <button type="submit" className="btn-primary px-8 py-3">
-                      {t('blog.postComment')}
+                    <button
+                      type="submit"
+                      disabled={commentStatus === 'loading'}
+                      className="btn-primary px-8 py-3 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      {commentStatus === 'loading' ? t('common.loading') : t('blog.postComment')}
                     </button>
+                    {commentStatus === 'success' && (
+                      <p className="text-green-600 text-sm mt-3">
+                        {t('blog.commentSubmitted', 'Thank you! Your comment is awaiting moderation.')}
+                      </p>
+                    )}
+                    {commentStatus === 'error' && (
+                      <p className="text-red-500 text-sm mt-3">
+                        {t('blog.commentError', 'Could not submit comment. Please try again.')}
+                      </p>
+                    )}
                   </form>
                 </div>
               </div>

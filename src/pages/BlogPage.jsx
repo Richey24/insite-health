@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useBlogContent } from '../contexts/BlogContentContext';
-import { multiLanguageBlogPosts } from '../data/multiLanguageBlogData';
+import { submitNewsletter } from '../utils/api';
 import { 
   Calendar, 
   User, 
@@ -10,13 +10,15 @@ import {
   Search, 
   ChevronRight,
   Tag,
-  Clock
+  Clock,
+  Loader2
 } from 'lucide-react';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 
 // Individual card that translates itself asynchronously
 const BlogPostCard = ({ rawPost, getTranslatedPost, currentLanguage, formatDate, t }) => {
   const [post, setPost] = useState(() => {
-    // Seed with English content immediately so the card renders without a flash
     const en = rawPost.content?.en || {};
     return { ...rawPost, title: en.title || '', excerpt: en.excerpt || '', tags: en.tags || [] };
   });
@@ -57,7 +59,7 @@ const BlogPostCard = ({ rawPost, getTranslatedPost, currentLanguage, formatDate,
           </div>
           <div className="flex items-center">
             <Calendar className="h-4 w-4 mr-1" />
-            <span>{formatDate(post.publishDate)}</span>
+            <span>{formatDate(post.publishedAt || post.publishDate)}</span>
           </div>
           <div className="flex items-center">
             <Clock className="h-4 w-4 mr-1" />
@@ -82,7 +84,7 @@ const BlogPostCard = ({ rawPost, getTranslatedPost, currentLanguage, formatDate,
 
           <div className="flex items-center text-gray-500 text-sm">
             <MessageCircle className="h-4 w-4 mr-1" />
-            <span>{post.commentCount} {t('blog.comments')}</span>
+            <span>{post.commentCount || 0} {t('blog.comments')}</span>
           </div>
         </div>
       </div>
@@ -93,9 +95,25 @@ const BlogPostCard = ({ rawPost, getTranslatedPost, currentLanguage, formatDate,
 const BlogPage = () => {
   const { t, i18n } = useTranslation();
   const { getTranslatedPost, currentLanguage } = useBlogContent();
+
+  // ── Posts state ──────────────────────────────────────────────────────────────
+  const [posts, setPosts] = useState([]);
+  const [totalPages, setTotalPages] = useState(1);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // ── Recent posts sidebar ─────────────────────────────────────────────────────
+  const [recentPosts, setRecentPosts] = useState([]);
+
+  // ── Search / pagination ──────────────────────────────────────────────────────
   const [searchQuery, setSearchQuery] = useState('');
+  const [activeSearch, setActiveSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 6;
+
+  // ── Newsletter ────────────────────────────────────────────────────────────────
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const [newsletterStatus, setNewsletterStatus] = useState(null);
 
   const categories = [
     { name: t('blog.categories.healthcareTech'), count: 15 },
@@ -113,21 +131,6 @@ const BlogPage = () => {
     "Compliance", "Patient Care", "Hospital Management"
   ];
 
-  // Recent posts sidebar — translated titles
-  const recentRaw = multiLanguageBlogPosts.slice(0, 3);
-  const [recentPosts, setRecentPosts] = useState(recentRaw.map((p) => ({
-    ...p,
-    title: p.content?.en?.title || '',
-  })));
-
-  useEffect(() => {
-    let cancelled = false;
-    Promise.all(recentRaw.map((p) => getTranslatedPost(p, currentLanguage))).then((results) => {
-      if (!cancelled) setRecentPosts(results.filter(Boolean));
-    });
-    return () => { cancelled = true; };
-  }, [currentLanguage]); // eslint-disable-line react-hooks/exhaustive-deps
-
   const formatDate = (date) => {
     if (!date) return '';
     const d = date instanceof Date ? date : new Date(date);
@@ -138,16 +141,73 @@ const BlogPage = () => {
     });
   };
 
+  // ── Fetch posts from API ──────────────────────────────────────────────────────
+  const fetchPosts = useCallback(async (page, search) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const params = new URLSearchParams({
+        page,
+        limit: postsPerPage,
+        status: 'published',
+      });
+      if (search) params.set('search', search);
+
+      const res = await fetch(`${API_BASE_URL}/api/blog/posts?${params}`);
+      if (!res.ok) throw new Error(`Server error: ${res.status}`);
+      const json = await res.json();
+
+      // API response: { posts: [...], totalPages: n, currentPage: n, total: n }
+      const rawPosts = json.posts || json.data || [];
+      setPosts(rawPosts);
+      setTotalPages(json.totalPages || 1);
+    } catch (err) {
+      setError(err.message);
+      setPosts([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fetch recent posts once on mount (no search, page 1, limit 3)
+  useEffect(() => {
+    const fetchRecent = async () => {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/blog/posts?page=1&limit=3&status=published`);
+        if (!res.ok) return;
+        const json = await res.json();
+        setRecentPosts(json.posts || json.data || []);
+      } catch {
+        // silently ignore — sidebar is non-critical
+      }
+    };
+    fetchRecent();
+  }, []);
+
+  useEffect(() => {
+    fetchPosts(currentPage, activeSearch);
+  }, [currentPage, activeSearch, fetchPosts]);
+
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log('Searching for:', searchQuery);
+    setActiveSearch(searchQuery.trim());
+    setCurrentPage(1);
   };
 
-  const totalPages = Math.ceil(multiLanguageBlogPosts.length / postsPerPage);
-  const currentRawPosts = multiLanguageBlogPosts.slice(
-    (currentPage - 1) * postsPerPage,
-    currentPage * postsPerPage
-  );
+  const handleNewsletterSubmit = async (e) => {
+    e.preventDefault();
+    if (!newsletterEmail) return;
+    setNewsletterStatus('loading');
+    try {
+      await submitNewsletter({ email: newsletterEmail });
+      setNewsletterStatus('success');
+      setNewsletterEmail('');
+      setTimeout(() => setNewsletterStatus(null), 5000);
+    } catch {
+      setNewsletterStatus('error');
+      setTimeout(() => setNewsletterStatus(null), 5000);
+    }
+  };
 
   const Sidebar = () => (
     <div className="space-y-8">
@@ -175,23 +235,26 @@ const BlogPage = () => {
       <div className="bg-white rounded-xl shadow-lg p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-4">{t('blog.recentPosts')}</h3>
         <div className="space-y-4">
-          {recentPosts.map((post) => (
-            <div key={post.id} className="flex space-x-3 group">
-              <img
-                src={post.featuredImage}
-                alt={post.title}
-                className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-              />
-              <div>
-                <h4 className="text-sm font-semibold text-gray-900 group-hover:text-insite-blue transition-colors leading-tight mb-1">
-                  <Link to={`/blog/${post.slug}`}>
-                    {(post.title || '').substring(0, 60)}{post.title?.length > 60 ? '...' : ''}
-                  </Link>
-                </h4>
-                <p className="text-xs text-gray-500">{formatDate(post.publishDate)}</p>
+          {recentPosts.map((rp) => {
+            const title = rp.content?.en?.title || rp.title || '';
+            return (
+              <div key={rp._id || rp.id} className="flex space-x-3 group">
+                <img
+                  src={rp.featuredImage}
+                  alt={title}
+                  className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                />
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-900 group-hover:text-insite-blue transition-colors leading-tight mb-1">
+                    <Link to={`/blog/${rp.slug}`}>
+                      {title.substring(0, 60)}{title.length > 60 ? '...' : ''}
+                    </Link>
+                  </h4>
+                  <p className="text-xs text-gray-500">{formatDate(rp.publishedAt || rp.publishDate)}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -262,38 +325,60 @@ const BlogPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Posts */}
           <div className="lg:col-span-2">
-            <div className="grid gap-8 mb-8">
-              {currentRawPosts.map((rawPost) => (
-                <BlogPostCard
-                  key={rawPost.id}
-                  rawPost={rawPost}
-                  getTranslatedPost={getTranslatedPost}
-                  currentLanguage={currentLanguage}
-                  formatDate={formatDate}
-                  t={t}
-                />
-              ))}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center">
-                <div className="flex space-x-2">
-                  {Array.from({ length: totalPages }, (_, index) => (
-                    <button
-                      key={index + 1}
-                      onClick={() => setCurrentPage(index + 1)}
-                      className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                        currentPage === index + 1
-                          ? 'bg-insite-blue text-white'
-                          : 'bg-white text-gray-700 hover:bg-insite-blue hover:text-white'
-                      }`}
-                    >
-                      {index + 1}
-                    </button>
+            {loading ? (
+              <div className="flex items-center justify-center py-24">
+                <Loader2 className="h-10 w-10 animate-spin text-insite-blue" />
+              </div>
+            ) : error ? (
+              <div className="text-center py-24">
+                <p className="text-red-500 mb-4">{error}</p>
+                <button
+                  onClick={() => fetchPosts(currentPage, activeSearch)}
+                  className="text-insite-blue hover:underline"
+                >
+                  Try again
+                </button>
+              </div>
+            ) : posts.length === 0 ? (
+              <div className="text-center py-24">
+                <p className="text-gray-500 text-lg">No posts found{activeSearch ? ` for "${activeSearch}"` : ''}.</p>
+              </div>
+            ) : (
+              <>
+                <div className="grid gap-8 mb-8">
+                  {posts.map((rawPost) => (
+                    <BlogPostCard
+                      key={rawPost._id || rawPost.id}
+                      rawPost={rawPost}
+                      getTranslatedPost={getTranslatedPost}
+                      currentLanguage={currentLanguage}
+                      formatDate={formatDate}
+                      t={t}
+                    />
                   ))}
                 </div>
-              </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center">
+                    <div className="flex space-x-2">
+                      {Array.from({ length: totalPages }, (_, index) => (
+                        <button
+                          key={index + 1}
+                          onClick={() => setCurrentPage(index + 1)}
+                          className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+                            currentPage === index + 1
+                              ? 'bg-insite-blue text-white'
+                              : 'bg-white text-gray-700 hover:bg-insite-blue hover:text-white'
+                          }`}
+                        >
+                          {index + 1}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
           </div>
 
@@ -313,16 +398,32 @@ const BlogPage = () => {
           <p className="text-white/90 text-xl mb-8 max-w-2xl mx-auto">
             {t('blog.newsletter.description')}
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto">
+          <form
+            onSubmit={handleNewsletterSubmit}
+            className="flex flex-col sm:flex-row gap-4 justify-center max-w-lg mx-auto"
+          >
             <input
               type="email"
+              value={newsletterEmail}
+              onChange={(e) => setNewsletterEmail(e.target.value)}
               placeholder={t('blog.newsletter.placeholder')}
               className="flex-1 px-6 py-3 rounded-lg border-0 focus:ring-2 focus:ring-white/50"
+              required
             />
-            <button className="bg-white text-insite-blue px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors">
-              {t('blog.newsletter.subscribe')}
+            <button
+              type="submit"
+              disabled={newsletterStatus === 'loading'}
+              className="bg-white text-insite-blue px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {newsletterStatus === 'loading' ? 'Subscribing...' : t('blog.newsletter.subscribe')}
             </button>
-          </div>
+          </form>
+          {newsletterStatus === 'success' && (
+            <p className="text-green-300 text-sm mt-4">Successfully subscribed! Check your inbox.</p>
+          )}
+          {newsletterStatus === 'error' && (
+            <p className="text-red-300 text-sm mt-4">Something went wrong. Please try again.</p>
+          )}
           <p className="text-white/70 text-sm mt-4">{t('blog.newsletter.privacy')}</p>
         </div>
       </section>

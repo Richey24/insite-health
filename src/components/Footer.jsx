@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { 
@@ -55,7 +56,7 @@ const Footer = () => {
       links: [
         { name: 'Case Studies', href: '#' },
         { name: 'White Papers', href: '#' },
-        { name: 'Blog', href: '#' },
+        { name: 'Blog', href: '/blog', internal: true },
         { name: 'Documentation', href: '#' },
         { name: 'API Reference', href: '#' },
         { name: 'Integration Guides', href: '#' }
@@ -65,7 +66,7 @@ const Footer = () => {
       title: 'Support',
       links: [
         { name: 'Help Center', href: '#' },
-        { name: 'Contact Support', href: '#' },
+        { name: 'Contact Support', href: '/contact', internal: true },
         { name: 'System Status', href: '#' },
         { name: 'Training', href: '#' },
         { name: 'Implementation', href: '#' },
@@ -75,8 +76,8 @@ const Footer = () => {
     company: {
       title: 'Company',
       links: [
-        { name: 'About Us', href: '#' },
-        { name: 'Our Team', href: '#' },
+        { name: 'About Us', href: '/about', internal: true },
+        { name: 'Our Team', href: '/team', internal: true },
         { name: 'Careers', href: '#' },
         { name: 'Press', href: '#' },
         { name: 'Partners', href: '#' },
@@ -209,16 +210,29 @@ const Footer = () => {
               <ul className="space-y-3">
                 {section.links.map((link, index) => (
                   <li key={index}>
-                    <a
-                      href={link.href}
-                      className="text-gray-400 hover:text-insite-cyan transition-colors duration-200 flex items-center gap-2 group"
-                    >
-                      {link.name}
-                      <ExternalLink 
-                        size={14} 
-                        className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" 
-                      />
-                    </a>
+                    {link.internal ? (
+                      <Link
+                        to={link.href}
+                        className="text-gray-400 hover:text-insite-cyan transition-colors duration-200 flex items-center gap-2 group"
+                      >
+                        {link.name}
+                        <ExternalLink 
+                          size={14} 
+                          className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" 
+                        />
+                      </Link>
+                    ) : (
+                      <a
+                        href={link.href}
+                        className="text-gray-400 hover:text-insite-cyan transition-colors duration-200 flex items-center gap-2 group"
+                      >
+                        {link.name}
+                        <ExternalLink 
+                          size={14} 
+                          className="opacity-0 group-hover:opacity-100 transition-opacity duration-200" 
+                        />
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>

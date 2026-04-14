@@ -16,6 +16,12 @@ import BlogSingle from './pages/BlogSingle'
 import LoginPage from './pages/LoginPage'
 import BlogManagement from './pages/BlogManagement'
 import BlogEditor from './pages/BlogEditor'
+import AssetTracking from './pages/services/AssetTracking'
+import MobileSecurity from './pages/services/MobileSecurity'
+import CapitalPlanning from './pages/services/CapitalPlanning'
+import SiteMonitoring from './pages/services/SiteMonitoring'
+import BlogCategory from './pages/BlogCategory'
+import BlogTag from './pages/BlogTag'
 import './i18n' // Initialize i18n
 
 function App() {
@@ -90,10 +96,52 @@ function App() {
                 <Footer />
               </>
             } />
+            <Route path="/blog/category/:name" element={
+              <>
+                <Header />
+                <BlogCategory />
+                <Footer />
+              </>
+            } />
+            <Route path="/blog/tag/:tag" element={
+              <>
+                <Header />
+                <BlogTag />
+                <Footer />
+              </>
+            } />
             <Route path="/blog/:slug" element={
               <>
                 <Header />
                 <BlogSingle />
+                <Footer />
+              </>
+            } />
+            <Route path="/services/asset-tracking" element={
+              <>
+                <Header />
+                <AssetTracking />
+                <Footer />
+              </>
+            } />
+            <Route path="/services/mobile-security" element={
+              <>
+                <Header />
+                <MobileSecurity />
+                <Footer />
+              </>
+            } />
+            <Route path="/services/capital-planning" element={
+              <>
+                <Header />
+                <CapitalPlanning />
+                <Footer />
+              </>
+            } />
+            <Route path="/services/site-monitoring" element={
+              <>
+                <Header />
+                <SiteMonitoring />
                 <Footer />
               </>
             } />

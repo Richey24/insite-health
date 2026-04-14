@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext();
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -14,82 +15,92 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Mock users - replace with actual API
-  const mockUsers = [
-    {
-      id: 1,
-      email: 'admin@insite.health',
-      password: 'admin123',
-      name: 'Admin User',
-      role: 'admin',
-      avatar: 'assets/images/team-1.jpg'
-    },
-    {
-      id: 2,
-      email: 'editor@insite.health',
-      password: 'editor123',
-      name: 'Content Editor',
-      role: 'editor',
-      avatar: 'assets/images/team-2.jpg'
-    },
-    {
-      id: 3,
-      email: 'author@insite.health',
-      password: 'author123',
-      name: 'Blog Author',
-      role: 'author',
-      avatar: 'assets/images/team-3.jpg'
-    }
-  ];
-
+  // On mount: restore user + validate token with server
   useEffect(() => {
-    // Check for stored auth token on mount
-    const storedUser = localStorage.getItem('authUser');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-    setIsLoading(false);
+    const restoreSession = async () => {
+      const token = localStorage.getItem('authToken');
+      if (!token) {
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/api/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          setUser(data.user);
+        } else {
+          // Token invalid or expired — clear storage
+          localStorage.removeItem('authToken');
+          localStorage.removeItem('authUser');
+        }
+      } catch {
+        // Network error — restore from storage so app doesn't break offline
+        const storedUser = localStorage.getItem('authUser');
+        if (storedUser) setUser(JSON.parse(storedUser));
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    restoreSession();
   }, []);
 
   const login = async (email, password) => {
     setIsLoading(true);
-    
-    // Simulate API call
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const foundUser = mockUsers.find(
-          u => u.email === email && u.password === password
-        );
-        
-        if (foundUser) {
-          const { password, ...userWithoutPassword } = foundUser;
-          setUser(userWithoutPassword);
-          localStorage.setItem('authUser', JSON.stringify(userWithoutPassword));
-          setIsLoading(false);
-          resolve(userWithoutPassword);
-        } else {
-          setIsLoading(false);
-          reject(new Error('Invalid email or password'));
-        }
-      }, 1000);
+
+    const res = await fetch(`${API_BASE}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
     });
+
+    const data = await res.json();
+    setIsLoading(false);
+
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || 'Invalid email or password.');
+    }
+
+    localStorage.setItem('authToken', data.token);
+    localStorage.setItem('authUser', JSON.stringify(data.user));
+    setUser(data.user);
+    return data.user;
   };
 
-  const logout = () => {
-    setUser(null);
+  const logout = async () => {
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      fetch(`${API_BASE}/api/auth/logout`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => {});
+    }
+    localStorage.removeItem('authToken');
     localStorage.removeItem('authUser');
+    setUser(null);
   };
 
   const hasPermission = (requiredRole) => {
     if (!user) return false;
-    
-    const roleHierarchy = {
-      'author': 1,
-      'editor': 2,
-      'admin': 3
-    };
-    
-    return roleHierarchy[user.role] >= roleHierarchy[requiredRole];
+    const roleHierarchy = { author: 1, editor: 2, admin: 3 };
+    return (roleHierarchy[user.role] || 0) >= (roleHierarchy[requiredRole] || 0);
+  };
+
+  // Authenticated fetch helper — attaches JWT automatically
+  const authFetch = (url, options = {}) => {
+    const token = localStorage.getItem('authToken');
+    return fetch(url, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...options.headers,
+      },
+    });
   };
 
   const value = {
@@ -98,7 +109,8 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     hasPermission,
-    isAuthenticated: !!user
+    authFetch,
+    isAuthenticated: !!user,
   };
 
   return (

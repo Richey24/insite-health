@@ -1,16 +1,23 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Stethoscope, Settings, TrendingUp, Phone, Mail, MapPin, Clock } from 'lucide-react';
+import { FileText, Stethoscope, Settings, TrendingUp, Phone, Mail, MapPin, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { appointmentSchema, contactSchema } from '../utils/formValidation';
+import { submitAppointment, submitContact } from '../utils/api';
 
 const ContactPage = () => {
   const [formType, setFormType] = useState('appointment');
+  const [appointmentStatus, setAppointmentStatus] = useState(null);
+  const [contactStatus, setContactStatus] = useState(null);
+
+  // Compute min date dynamically (today)
+  const today = new Date().toISOString().split('T')[0];
   
   const {
     register: registerAppointment,
     handleSubmit: handleSubmitAppointment,
+    reset: resetAppointment,
     formState: { errors: appointmentErrors, isSubmitting: isSubmittingAppointment }
   } = useForm({
     resolver: yupResolver(appointmentSchema)
@@ -19,19 +26,36 @@ const ContactPage = () => {
   const {
     register: registerContact,
     handleSubmit: handleSubmitContact,
+    reset: resetContact,
     formState: { errors: contactErrors, isSubmitting: isSubmittingContact }
   } = useForm({
     resolver: yupResolver(contactSchema)
   });
 
   const onSubmitAppointment = async (data) => {
-    console.log('Appointment form submitted:', data);
-    // API call would go here
+    try {
+      setAppointmentStatus('loading');
+      await submitAppointment(data);
+      setAppointmentStatus('success');
+      resetAppointment();
+      setTimeout(() => setAppointmentStatus(null), 5000);
+    } catch {
+      setAppointmentStatus('error');
+      setTimeout(() => setAppointmentStatus(null), 5000);
+    }
   };
 
   const onSubmitContact = async (data) => {
-    console.log('Contact form submitted:', data);
-    // API call would go here
+    try {
+      setContactStatus('loading');
+      await submitContact(data);
+      setContactStatus('success');
+      resetContact();
+      setTimeout(() => setContactStatus(null), 5000);
+    } catch {
+      setContactStatus('error');
+      setTimeout(() => setContactStatus(null), 5000);
+    }
   };
 
   const processSteps = [
@@ -187,17 +211,12 @@ const ContactPage = () => {
                     </div>
                     
                     <div>
-                      <select 
+                      <input
+                        type="date"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
+                        min={today}
                         {...registerAppointment('preferredDate')}
-                      >
-                        <option value="">Select Date*</option>
-                        <option value="2026-04-25">25 April 2026</option>
-                        <option value="2026-04-26">26 April 2026</option>
-                        <option value="2026-04-27">27 April 2026</option>
-                        <option value="2026-04-28">28 April 2026</option>
-                        <option value="2026-04-29">29 April 2026</option>
-                      </select>
+                      />
                     </div>
                   </div>
 
@@ -239,11 +258,23 @@ const ContactPage = () => {
 
                   <button
                     type="submit"
-                    disabled={isSubmittingAppointment}
+                    disabled={isSubmittingAppointment || appointmentStatus === 'loading'}
                     className="w-full bg-insite-orange hover:bg-insite-orange/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmittingAppointment ? 'Sending...' : 'Send Request'}
+                    {isSubmittingAppointment || appointmentStatus === 'loading' ? 'Sending...' : 'Send Request'}
                   </button>
+                  {appointmentStatus === 'success' && (
+                    <div className="flex items-center gap-2 mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
+                      <p className="text-green-700 text-sm">Request sent! We'll contact you within 24 hours.</p>
+                    </div>
+                  )}
+                  {appointmentStatus === 'error' && (
+                    <div className="flex items-center gap-2 mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                      <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
+                      <p className="text-red-700 text-sm">Something went wrong. Please try again or call us directly.</p>
+                    </div>
+                  )}
                 </form>
               </div>
             </div>

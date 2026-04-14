@@ -86,8 +86,8 @@ const Header = () => {
               </a>
             </div>
             <div className="flex space-x-6 text-sm">
-              <a href="#" className="hover:text-insite-cyan transition-colors">{t('header.helpDesk')}</a>
-              <a href="#" className="hover:text-insite-cyan transition-colors">{t('header.emergency')}</a>
+              <Link to="/contact" className="hover:text-insite-cyan transition-colors">{t('header.helpDesk')}</Link>
+              <a href="tel:+15551234568" className="hover:text-insite-cyan transition-colors">{t('header.emergency')}</a>
               <Link to="/contact" className="hover:text-insite-cyan transition-colors">{t('nav.contact')}</Link>
             </div>
           </div>
@@ -230,12 +230,12 @@ const Header = () => {
               {/* Language Switcher */}
               <LanguageSwitcher />
               
-              <a
-                href="#"
+              <Link
+                to="/contact"
                 className="hidden md:inline-flex btn-primary text-sm"
               >
                 {t('header.bookingNow')}
-              </a>
+              </Link>
               
               {/* Mobile menu button */}
               <button
@@ -359,13 +359,13 @@ const Header = () => {
                 <LanguageSwitcher variant="inline" />
               </div>
               
-              <a
-                href="#"
+              <Link
+                to="/contact"
                 className="btn-primary w-full text-center block"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 {t('header.bookingNow')}
-              </a>
+              </Link>
             </div>
           </div>
         </div>

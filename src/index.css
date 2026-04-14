@@ -164,3 +164,52 @@ html {
 .spinner {
   @apply animate-spin rounded-full h-8 w-8 border-b-2 border-insite-blue;
 }
+
+/* ── Tiptap rich text editor ──────────────────────────────── */
+
+/* Placeholder text */
+.tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #9ca3af;
+  pointer-events: none;
+  height: 0;
+}
+
+/* Prose styles inside the editor */
+.tiptap {
+  outline: none;
+}
+
+.tiptap h1 { @apply text-2xl font-bold text-gray-900 mt-6 mb-3; }
+.tiptap h2 { @apply text-xl font-bold text-gray-900 mt-5 mb-2; }
+.tiptap h3 { @apply text-lg font-semibold text-gray-900 mt-4 mb-2; }
+.tiptap p  { @apply text-gray-700 leading-relaxed mb-3; }
+
+.tiptap ul  { @apply list-disc list-outside pl-5 mb-3 space-y-1; }
+.tiptap ol  { @apply list-decimal list-outside pl-5 mb-3 space-y-1; }
+.tiptap li  { @apply text-gray-700; }
+
+.tiptap blockquote {
+  @apply border-l-4 border-insite-blue/40 pl-4 italic text-gray-600 my-4;
+}
+
+.tiptap code {
+  @apply bg-gray-100 text-insite-blue px-1.5 py-0.5 rounded text-sm font-mono;
+}
+
+.tiptap pre {
+  @apply bg-gray-900 text-gray-100 rounded-lg p-4 my-4 overflow-x-auto text-sm font-mono;
+}
+
+.tiptap hr {
+  @apply border-gray-200 my-6;
+}
+
+.tiptap a {
+  @apply text-insite-blue underline hover:text-insite-blue/80 transition-colors;
+}
+
+.tiptap strong { @apply font-semibold text-gray-900; }
+.tiptap em     { @apply italic; }
+.tiptap s      { @apply line-through text-gray-500; }

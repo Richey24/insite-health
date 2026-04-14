@@ -3,7 +3,9 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import MultiLanguageBlogEditor from '../components/MultiLanguageBlogEditor';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, AlertCircle } from 'lucide-react';
+
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 
 const EMPTY_LANG_CONTENT = {
   title: '',
@@ -18,42 +20,92 @@ const BlogEditor = () => {
   const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, authFetch } = useAuth();
   const [initialData, setInitialData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
 
   useEffect(() => {
-    const basePost = {
-      // Per-language content
-      content: {
-        en: { ...EMPTY_LANG_CONTENT },
-      },
-      // Global post fields
-      status: 'draft',
-      publishDate: null,
-      featuredImage: { url: '', altText: '' },
-      categories: [],
-      author: {
-        name: user?.name || '',
-        slug: user?.slug || '',
-        avatar: user?.avatar || '/assets/images/team-1.jpg',
-        bio: '',
-      },
+    const loadPost = async () => {
+      setIsLoading(true);
+
+      if (id) {
+        try {
+          // Fetch existing post by ID — use slug-less admin endpoint via id
+          const res = await authFetch(`${API_BASE}/api/blog/posts?status=all&limit=200`);
+          const data = await res.json();
+
+          if (res.ok && data.success) {
+            const post = data.data.find((p) => p._id === id);
+            if (post) {
+              setInitialData(post);
+              setIsLoading(false);
+              return;
+            }
+          }
+        } catch (err) {
+          console.error('Failed to load post:', err.message);
+        }
+      }
+
+      // New post scaffold
+      setInitialData({
+        content: { en: { ...EMPTY_LANG_CONTENT } },
+        status: 'draft',
+        publishedAt: null,
+        featuredImage: { url: '', altText: '' },
+        categories: [],
+        author: {
+          name: user?.name || '',
+          slug: user?.slug || '',
+          avatar: user?.avatar || '/assets/images/team-1.jpg',
+          bio: '',
+        },
+      });
+      setIsLoading(false);
     };
 
-    if (id) {
-      // TODO: fetch real post from API using `id`
-      setInitialData({ ...basePost, id });
-    } else {
-      setInitialData(basePost);
-    }
-    setIsLoading(false);
+    loadPost();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, user]);
 
-  const handleSave = (updatedPost) => {
-    // TODO: persist to API
-    console.log('Saving post:', updatedPost);
-    navigate('/blog/manage');
+  const handleSave = async (updatedPost) => {
+    setIsSaving(true);
+    setSaveError(null);
+
+    try {
+      const endpoint = id
+        ? `${API_BASE}/api/blog/posts/${id}`
+        : `${API_BASE}/api/blog/posts`;
+      const method = id ? 'PUT' : 'POST';
+
+      // Derive slug from EN title if not set
+      const slug =
+        updatedPost.slug ||
+        (updatedPost.content?.en?.title || '')
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-');
+
+      const res = await authFetch(endpoint, {
+        method,
+        body: JSON.stringify({ ...updatedPost, slug }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'Save failed.');
+      }
+
+      navigate('/blog/manage');
+    } catch (err) {
+      setSaveError(err.message);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleCancel = () => navigate('/blog/manage');
@@ -87,6 +139,9 @@ const BlogEditor = () => {
               <h1 className="text-lg font-bold text-gray-900">
                 {id ? t('blog.editPost') : t('blog.newPost')}
               </h1>
+              {isSaving && (
+                <span className="text-sm text-gray-500 animate-pulse">Saving...</span>
+              )}
             </div>
             <button
               type="button"
@@ -96,10 +151,16 @@ const BlogEditor = () => {
               {t('common.cancel')}
             </button>
           </div>
+          {saveError && (
+            <div className="mt-2 flex items-center gap-2 text-red-600 text-sm">
+              <AlertCircle className="h-4 w-4 flex-shrink-0" />
+              <span>{saveError}</span>
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Editor — full width, no inner container (editor manages its own max-width) */}
+      {/* Editor */}
       <MultiLanguageBlogEditor
         initialData={initialData}
         onSave={handleSave}

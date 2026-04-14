@@ -38,10 +38,16 @@ export async function submitAppointment(formData) {
     body: JSON.stringify({
       name: formData.name,
       email: formData.email,
+      phone: formData.phone,
+      organization: formData.organization,
+      appointmentType: formData.appointmentType,
+      preferredDate: formData.preferredDate,
+      preferredTime: formData.preferredTime,
+      // ContactPage.jsx also registers patientType, gender, department — include both field sets
       patientType: formData.patientType,
-      appointmentDate: formData.date,
       gender: formData.gender,
-      service: formData.service,
+      department: formData.department,
+      message: formData.message,
       comment: formData.comment,
       submittedAt: new Date().toISOString(),
     }),

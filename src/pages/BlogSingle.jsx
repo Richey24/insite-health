@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useBlogContent } from '../contexts/BlogContentContext';
-import { multiLanguageBlogPosts } from '../data/multiLanguageBlogData';
-import { 
-  Calendar, 
-  User, 
-  MessageCircle, 
-  Search, 
+import {
+  Calendar,
+  User,
+  MessageCircle,
+  Search,
   Tag,
   Clock,
   Share2,
@@ -17,94 +16,128 @@ import {
   Bookmark
 } from 'lucide-react';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+
+// Normalise a raw API post so getTranslatedPost can read it correctly.
+// The API stores the body in content.en.body; the context reads content.en.content.
+const normalisePost = (raw) => {
+  if (!raw) return null;
+  const patched = { ...raw };
+  if (patched.content?.en) {
+    patched.content = {
+      ...patched.content,
+      en: {
+        ...patched.content.en,
+        content: patched.content.en.content ?? patched.content.en.body ?? '',
+      },
+    };
+  }
+  // Map API fields to the shape the rest of the UI expects
+  patched.id = raw._id || raw.id;
+  patched.publishDate = raw.publishedAt || raw.publishDate;
+  return patched;
+};
+
 const BlogSingle = () => {
   const { slug } = useParams();
   const { t, i18n } = useTranslation();
   const { getTranslatedPost, currentLanguage } = useBlogContent();
 
   const [post, setPost] = useState(null);
-  const [isTranslating, setIsTranslating] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
+  const [recentPosts, setRecentPosts] = useState([]);
   const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState({
-    name: '',
-    email: '',
-    website: '',
-    comment: ''
-  });
+  const [newComment, setNewComment] = useState({ name: '', email: '', website: '', comment: '' });
   const [isLiked, setIsLiked] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
 
-  // Find and translate the post whenever slug or language changes
-  useEffect(() => {
-    const rawPost = multiLanguageBlogPosts.find((p) => p.slug === slug);
-    if (!rawPost) {
-      setNotFound(true);
-      setIsTranslating(false);
-      return;
-    }
-
-    setNotFound(false);
-    setIsTranslating(true);
-    getTranslatedPost(rawPost, currentLanguage).then((translated) => {
-      setPost(translated);
-      setIsTranslating(false);
-    });
-  }, [slug, currentLanguage]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // Recent posts = all posts except current, up to 3
-  const recentRaw = multiLanguageBlogPosts
-    .filter((p) => p.slug !== slug)
-    .slice(0, 3);
-
-  const [recentPosts, setRecentPosts] = useState(recentRaw.map((p) => ({
-    ...p,
-    title: p.content?.en?.title || '',
-  })));
-
-  // Translate recent post titles when language changes
+  // Fetch the main post
   useEffect(() => {
     let cancelled = false;
-    Promise.all(
-      recentRaw.map((p) => getTranslatedPost(p, currentLanguage))
-    ).then((translated) => {
-      if (!cancelled) setRecentPosts(translated);
-    });
+    setLoading(true);
+    setNotFound(false);
+    setPost(null);
+
+    fetch(`${API_BASE_URL}/api/blog/posts/${slug}`)
+      .then((res) => {
+        if (!res.ok) throw new Error('not found');
+        return res.json();
+      })
+      .then(async (data) => {
+        if (cancelled) return;
+        const raw = data.post || data;
+        const normalised = normalisePost(raw);
+        const translated = await getTranslatedPost(normalised, currentLanguage);
+        if (!cancelled) {
+          setPost(translated);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setNotFound(true);
+          setLoading(false);
+        }
+      });
+
+    return () => { cancelled = true; };
+  }, [slug]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Re-translate when language changes (post already loaded)
+  useEffect(() => {
+    if (!post) return;
+    let cancelled = false;
+    // We need the original normalised post to re-translate
+    fetch(`${API_BASE_URL}/api/blog/posts/${slug}`)
+      .then((res) => res.ok ? res.json() : null)
+      .then(async (data) => {
+        if (!data || cancelled) return;
+        const raw = data.post || data;
+        const normalised = normalisePost(raw);
+        const translated = await getTranslatedPost(normalised, currentLanguage);
+        if (!cancelled) setPost(translated);
+      });
     return () => { cancelled = true; };
   }, [currentLanguage]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Fetch recent posts (exclude current slug)
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/blog/posts?status=published&limit=4`)
+      .then((res) => res.ok ? res.json() : null)
+      .then(async (data) => {
+        if (!data) return;
+        const posts = (data.posts || data).filter((p) => p.slug !== slug).slice(0, 3);
+        const translated = await Promise.all(
+          posts.map((p) => getTranslatedPost(normalisePost(p), currentLanguage))
+        );
+        setRecentPosts(translated.filter(Boolean));
+      })
+      .catch(() => {});
+  }, [slug, currentLanguage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const categories = [
     { name: t('blog.categories.healthcareTech'), count: 15 },
     { name: t('blog.categories.digitalHealth'), count: 12 },
     { name: t('blog.categories.compliance'), count: 8 },
     { name: t('blog.categories.assetManagement'), count: 6 },
-    { name: t('blog.categories.telemedicine'), count: 10 }
+    { name: t('blog.categories.telemedicine'), count: 10 },
   ];
 
   const tags = [
-    "Healthcare", "Technology", "AI", "HIPAA", "Telemedicine",
-    "Asset Tracking", "Mobile Apps", "Data Analytics", "Security", "Compliance"
+    'Healthcare', 'Technology', 'AI', 'HIPAA', 'Telemedicine',
+    'Asset Tracking', 'Mobile Apps', 'Data Analytics', 'Security', 'Compliance',
   ];
 
   const formatDate = (date) => {
     if (!date) return '';
     const d = date instanceof Date ? date : new Date(date);
-    return d.toLocaleDateString(i18n.language, {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+    return d.toLocaleDateString(i18n.language, { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   const handleCommentSubmit = (e) => {
     e.preventDefault();
-    const comment = {
-      id: Date.now(),
-      ...newComment,
-      date: new Date(),
-      approved: false
-    };
-    setComments([...comments, comment]);
+    setComments([...comments, { id: Date.now(), ...newComment, date: new Date(), approved: false }]);
     setNewComment({ name: '', email: '', website: '', comment: '' });
   };
 
@@ -119,8 +152,7 @@ const BlogSingle = () => {
     window.open(shareUrls[platform], '_blank', 'width=600,height=400');
   };
 
-  // Loading state
-  if (isTranslating) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -131,7 +163,6 @@ const BlogSingle = () => {
     );
   }
 
-  // Not found
   if (notFound || !post) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -152,13 +183,9 @@ const BlogSingle = () => {
       <div className="bg-insite-blue py-12">
         <div className="container-custom">
           <div className="flex items-center justify-center space-x-2 text-white/90 mb-4">
-            <Link to="/" className="hover:text-white transition-colors">
-              {t('nav.home')}
-            </Link>
+            <Link to="/" className="hover:text-white transition-colors">{t('nav.home')}</Link>
             <span>/</span>
-            <Link to="/blog" className="hover:text-white transition-colors">
-              {t('nav.blog')}
-            </Link>
+            <Link to="/blog" className="hover:text-white transition-colors">{t('nav.blog')}</Link>
             <span>/</span>
             <span className="text-insite-cyan">{t('nav.blog')}</span>
           </div>
@@ -200,24 +227,28 @@ const BlogSingle = () => {
                 {/* Meta */}
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6 pb-4 border-b border-gray-200">
                   <div className="flex items-center">
-                    <img
-                      src={post.author?.avatar}
-                      alt={post.author?.name}
-                      className="w-8 h-8 rounded-full mr-2 object-cover"
-                    />
+                    {post.author?.avatar && (
+                      <img
+                        src={post.author.avatar}
+                        alt={post.author.name}
+                        className="w-8 h-8 rounded-full mr-2 object-cover"
+                      />
+                    )}
                     <span>{t('blog.author')}: {post.author?.name}</span>
                   </div>
                   <div className="flex items-center">
                     <Calendar className="h-4 w-4 mr-1" />
                     <span>{formatDate(post.publishDate)}</span>
                   </div>
-                  <div className="flex items-center">
-                    <Clock className="h-4 w-4 mr-1" />
-                    <span>{post.readTime}</span>
-                  </div>
+                  {post.readTime && (
+                    <div className="flex items-center">
+                      <Clock className="h-4 w-4 mr-1" />
+                      <span>{post.readTime}</span>
+                    </div>
+                  )}
                   <div className="flex items-center">
                     <MessageCircle className="h-4 w-4 mr-1" />
-                    <span>{post.commentCount} {t('blog.comments')}</span>
+                    <span>{post.commentCount || 0} {t('blog.comments')}</span>
                   </div>
                 </div>
 
@@ -295,22 +326,26 @@ const BlogSingle = () => {
                 <div className="bg-gray-50 rounded-xl p-6 mt-8">
                   <h3 className="text-xl font-bold text-gray-900 mb-4">{t('blog.aboutAuthor')}</h3>
                   <div className="flex items-start space-x-4">
-                    <img
-                      src={post.author?.avatar}
-                      alt={post.author?.name}
-                      className="w-16 h-16 rounded-full object-cover"
-                    />
+                    {post.author?.avatar && (
+                      <img
+                        src={post.author.avatar}
+                        alt={post.author.name}
+                        className="w-16 h-16 rounded-full object-cover"
+                      />
+                    )}
                     <div>
                       <h4 className="font-semibold text-gray-900 mb-1">{post.author?.name}</h4>
                       {post.author?.bio && (
                         <p className="text-gray-600 mb-3">{post.author.bio}</p>
                       )}
-                      <Link
-                        to={`/blog/author/${post.author?.slug}`}
-                        className="text-insite-blue hover:text-insite-blue/80 font-medium"
-                      >
-                        {t('blog.viewAllPostsBy', { name: post.author?.name })}
-                      </Link>
+                      {post.author?.slug && (
+                        <Link
+                          to={`/blog/author/${post.author.slug}`}
+                          className="text-insite-blue hover:text-insite-blue/80 font-medium"
+                        >
+                          {t('blog.viewAllPostsBy', { name: post.author?.name })}
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -375,10 +410,7 @@ const BlogSingle = () => {
                       />
                     </div>
 
-                    <button
-                      type="submit"
-                      className="btn-primary px-8 py-3"
-                    >
+                    <button type="submit" className="btn-primary px-8 py-3">
                       {t('blog.postComment')}
                     </button>
                   </form>
@@ -405,28 +437,32 @@ const BlogSingle = () => {
             </div>
 
             {/* Recent Posts */}
-            <div className="bg-white rounded-xl shadow-lg p-6">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">{t('blog.recentPosts')}</h3>
-              <div className="space-y-4">
-                {recentPosts.map((rp) => (
-                  <div key={rp.id} className="flex space-x-3 group">
-                    <img
-                      src={rp.featuredImage}
-                      alt={rp.title}
-                      className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
-                    />
-                    <div>
-                      <h4 className="text-sm font-semibold text-gray-900 group-hover:text-insite-blue transition-colors leading-tight mb-1">
-                        <Link to={`/blog/${rp.slug}`}>
-                          {(rp.title || '').substring(0, 60)}{rp.title?.length > 60 ? '...' : ''}
-                        </Link>
-                      </h4>
-                      <p className="text-xs text-gray-500">{formatDate(rp.publishDate)}</p>
+            {recentPosts.length > 0 && (
+              <div className="bg-white rounded-xl shadow-lg p-6">
+                <h3 className="text-xl font-bold text-gray-900 mb-4">{t('blog.recentPosts')}</h3>
+                <div className="space-y-4">
+                  {recentPosts.map((rp) => (
+                    <div key={rp.id || rp._id} className="flex space-x-3 group">
+                      {rp.featuredImage && (
+                        <img
+                          src={rp.featuredImage}
+                          alt={rp.title}
+                          className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
+                        />
+                      )}
+                      <div>
+                        <h4 className="text-sm font-semibold text-gray-900 group-hover:text-insite-blue transition-colors leading-tight mb-1">
+                          <Link to={`/blog/${rp.slug}`}>
+                            {(rp.title || '').substring(0, 60)}{rp.title?.length > 60 ? '...' : ''}
+                          </Link>
+                        </h4>
+                        <p className="text-xs text-gray-500">{formatDate(rp.publishDate)}</p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Categories */}
             <div className="bg-white rounded-xl shadow-lg p-6">
@@ -468,30 +504,34 @@ const BlogSingle = () => {
         </div>
 
         {/* You Might Also Like */}
-        <div className="mt-16">
-          <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">{t('blog.youMightAlsoLike')}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {recentPosts.map((rp) => (
-              <Link
-                key={rp.id}
-                to={`/blog/${rp.slug}`}
-                className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
-              >
-                <img
-                  src={rp.featuredImage}
-                  alt={rp.title}
-                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="p-4">
-                  <h4 className="font-bold text-gray-900 group-hover:text-insite-blue transition-colors leading-tight">
-                    {rp.title}
-                  </h4>
-                  <p className="text-sm text-gray-500 mt-2">{formatDate(rp.publishDate)}</p>
-                </div>
-              </Link>
-            ))}
+        {recentPosts.length > 0 && (
+          <div className="mt-16">
+            <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">{t('blog.youMightAlsoLike')}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {recentPosts.map((rp) => (
+                <Link
+                  key={rp.id || rp._id}
+                  to={`/blog/${rp.slug}`}
+                  className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
+                >
+                  {rp.featuredImage && (
+                    <img
+                      src={rp.featuredImage}
+                      alt={rp.title}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  )}
+                  <div className="p-4">
+                    <h4 className="font-bold text-gray-900 group-hover:text-insite-blue transition-colors leading-tight">
+                      {rp.title}
+                    </h4>
+                    <p className="text-sm text-gray-500 mt-2">{formatDate(rp.publishDate)}</p>
+                  </div>
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -1,7 +1,7 @@
 // Form validation schemas using Yup
 import * as yup from 'yup';
 
-// Contact/Appointment form validation schema
+// Appointment booking form validation schema
 export const appointmentSchema = yup.object({
   name: yup
     .string()
@@ -11,21 +11,30 @@ export const appointmentSchema = yup.object({
     .string()
     .email('Invalid email address')
     .required('Email is required'),
+  phone: yup
+    .string()
+    .required('Phone number is required'),
+  organization: yup
+    .string(),
   patientType: yup
     .string()
     .required('Please select patient type'),
-  date: yup
-    .string()
-    .required('Please select a date'),
   gender: yup
     .string()
     .required('Please select gender'),
-  service: yup
+  department: yup
+    .string(),
+  appointmentType: yup
     .string()
     .required('Please select a service'),
-  comment: yup
+  preferredDate: yup
     .string()
-    .max(500, 'Comment must be less than 500 characters'),
+    .required('Please select a date'),
+  preferredTime: yup
+    .string(),
+  message: yup
+    .string()
+    .max(500, 'Message must be less than 500 characters'),
 });
 
 // Newsletter subscription validation schema
@@ -36,7 +45,7 @@ export const newsletterSchema = yup.object({
     .required('Email is required'),
 });
 
-// Contact validation (simpler form)
+// Contact form validation schema
 export const contactSchema = yup.object({
   name: yup
     .string()

@@ -12,7 +12,9 @@ import {
   BarChart3,
   LogOut,
   AlertCircle,
-  RefreshCw
+  RefreshCw,
+  KeyRound,
+  CheckCircle
 } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
@@ -27,6 +29,45 @@ const BlogManagement = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({ page: 1, total: 0, limit: 20 });
+
+  // Change password state
+  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [pwForm, setPwForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [pwLoading, setPwLoading] = useState(false);
+  const [pwError, setPwError] = useState('');
+  const [pwSuccess, setPwSuccess] = useState('');
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    setPwError('');
+    setPwSuccess('');
+    if (pwForm.newPassword !== pwForm.confirmPassword) {
+      setPwError('New passwords do not match.');
+      return;
+    }
+    if (pwForm.newPassword.length < 8) {
+      setPwError('New password must be at least 8 characters.');
+      return;
+    }
+    setPwLoading(true);
+    try {
+      const res = await authFetch(`${API_BASE}/api/auth/change-password`, {
+        method: 'POST',
+        body: JSON.stringify({
+          currentPassword: pwForm.currentPassword,
+          newPassword: pwForm.newPassword,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.error || 'Failed to change password.');
+      setPwSuccess('Password changed successfully.');
+      setPwForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
+    } catch (err) {
+      setPwError(err.message);
+    } finally {
+      setPwLoading(false);
+    }
+  };
 
   const fetchPosts = async () => {
     setIsLoading(true);
@@ -149,6 +190,13 @@ const BlogManagement = () => {
                 <span className="text-sm text-gray-700">{user?.name}</span>
                 <button onClick={logout} className="text-gray-600 hover:text-gray-900 transition-colors">
                   <LogOut className="h-5 w-5" />
+                </button>
+                <button
+                  onClick={() => { setShowChangePassword((v) => !v); setPwError(''); setPwSuccess(''); }}
+                  className="text-gray-600 hover:text-insite-blue transition-colors"
+                  title="Change Password"
+                >
+                  <KeyRound className="h-5 w-5" />
                 </button>
               </div>
             </div>
@@ -397,6 +445,77 @@ const BlogManagement = () => {
             </div>
           )}
         </div>
+        {/* Change Password Panel */}
+        {showChangePassword && (
+          <div className="bg-white rounded-lg shadow mt-8 p-6 max-w-md">
+            <h2 className="text-lg font-semibold text-gray-900 mb-6 flex items-center gap-2">
+              <KeyRound className="h-5 w-5 text-insite-blue" />
+              Change Password
+            </h2>
+
+            {pwError && (
+              <div className="flex items-center gap-2 bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 mb-4">
+                <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                <span className="text-sm">{pwError}</span>
+              </div>
+            )}
+            {pwSuccess && (
+              <div className="flex items-center gap-2 bg-green-50 border border-green-200 text-green-700 rounded-lg p-3 mb-4">
+                <CheckCircle className="h-4 w-4 flex-shrink-0" />
+                <span className="text-sm">{pwSuccess}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                <input
+                  type="password"
+                  required
+                  value={pwForm.currentPassword}
+                  onChange={(e) => setPwForm({ ...pwForm, currentPassword: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                <input
+                  type="password"
+                  required
+                  value={pwForm.newPassword}
+                  onChange={(e) => setPwForm({ ...pwForm, newPassword: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                <input
+                  type="password"
+                  required
+                  value={pwForm.confirmPassword}
+                  onChange={(e) => setPwForm({ ...pwForm, confirmPassword: e.target.value })}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                />
+              </div>
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={pwLoading}
+                  className="bg-insite-blue text-white px-6 py-2 rounded-lg font-medium hover:bg-insite-blue/90 transition-colors disabled:opacity-50"
+                >
+                  {pwLoading ? 'Saving...' : 'Update Password'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setShowChangePassword(false); setPwError(''); setPwSuccess(''); }}
+                  className="text-gray-600 hover:text-gray-900 text-sm"
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );

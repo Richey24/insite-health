@@ -36,17 +36,6 @@ const LoginPage = () => {
     });
   };
 
-  // Demo credentials for easy testing
-  const demoCredentials = [
-    { role: 'Admin', email: 'admin@insite.health', password: 'admin123' },
-    { role: 'Editor', email: 'editor@insite.health', password: 'editor123' },
-    { role: 'Author', email: 'author@insite.health', password: 'author123' }
-  ];
-
-  const fillDemoCredentials = (email, password) => {
-    setFormData({ email, password });
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-insite-blue via-insite-blue/90 to-insite-blue/80 relative overflow-hidden">
       {/* Background Pattern */}
@@ -161,35 +150,6 @@ const LoginPage = () => {
                 )}
               </button>
             </form>
-
-            {/* Demo Credentials */}
-            <div className="mt-8 pt-6 border-t border-gray-200">
-              <h3 className="text-sm font-bold text-gray-900 mb-4 text-center">Quick Login - Demo Accounts:</h3>
-              <div className="space-y-3">
-                {demoCredentials.map((cred, index) => (
-                  <button
-                    key={index}
-                    onClick={() => fillDemoCredentials(cred.email, cred.password)}
-                    className="w-full text-left p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl hover:from-insite-blue/5 hover:to-insite-blue/5 transition-all duration-200 group border border-gray-200 hover:border-insite-blue/20"
-                  >
-                    <div className="flex justify-between items-center">
-                      <div>
-                        <p className="text-sm font-bold text-gray-900">{cred.role} Account</p>
-                        <p className="text-xs text-gray-600">{cred.email}</p>
-                      </div>
-                      <div className="text-xs bg-insite-blue/10 text-insite-blue px-3 py-1 rounded-full group-hover:bg-insite-blue group-hover:text-white transition-all duration-200">
-                        Click to use
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-                <p className="text-xs text-blue-700 text-center">
-                  <strong>Tip:</strong> Click any demo account above to auto-fill credentials
-                </p>
-              </div>
-            </div>
 
             <div className="mt-8 text-center space-y-3">
               <Link 

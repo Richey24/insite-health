@@ -4,7 +4,7 @@ import { supportedLanguages } from '../i18n';
 import { Globe, ChevronDown, Check } from 'lucide-react';
 
 const LanguageSwitcher = ({ variant = 'dropdown' }) => {
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
 
   const currentLanguage = supportedLanguages.find(
@@ -71,7 +71,7 @@ const LanguageSwitcher = ({ variant = 'dropdown' }) => {
           {/* Dropdown Menu */}
           <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-20">
             <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase border-b border-gray-100">
-              Select Language
+              {t('common.selectLanguage')}
             </div>
             
             {supportedLanguages.map(language => (
@@ -95,7 +95,7 @@ const LanguageSwitcher = ({ variant = 'dropdown' }) => {
             
             <div className="border-t border-gray-100 mt-2 pt-2 px-4">
               <p className="text-xs text-gray-500">
-                Language preference is saved automatically
+                {t('common.languageSaved')}
               </p>
             </div>
           </div>

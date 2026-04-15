@@ -7,7 +7,7 @@ import { submitNewsletter } from '../utils/api';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 
 const Blog = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [activeCategory, setActiveCategory] = useState('all');
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterStatus, setNewsletterStatus] = useState(null); // null | 'loading' | 'success' | 'error'
@@ -30,7 +30,7 @@ const Blog = () => {
           categoryLabel: (p.categories || [])[0] || 'General',
           author: p.author?.name || 'InSite Team',
           date: p.publishedAt
-            ? new Date(p.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            ? new Date(p.publishedAt).toLocaleDateString(i18n.language, { year: 'numeric', month: 'long', day: 'numeric' })
             : '',
           readTime: p.readTime || '',
           featured: i === 0,
@@ -122,7 +122,7 @@ const Blog = () => {
                       }}
                     />
                     <div className="w-full h-64 lg:h-full bg-gradient-to-br from-insite-blue to-insite-cyan hidden items-center justify-center text-white text-4xl font-bold">
-                      Featured
+                      {t('blog.featured')}
                     </div>
                   </div>
                   <div className="lg:w-1/2 p-8 lg:p-12 flex flex-col justify-center">
@@ -244,7 +244,7 @@ const Blog = () => {
           </div>
         ) : (
           <div className="text-center py-12 text-gray-500">
-            No posts found in this category.
+            {t('blog.noPostsInCategory')}
           </div>
         )}
 
@@ -273,15 +273,15 @@ const Blog = () => {
                   className="btn-primary whitespace-nowrap disabled:opacity-60 disabled:cursor-not-allowed"
                 >
                   {newsletterStatus === 'loading'
-                    ? 'Subscribing...'
+                    ? t('blog.subscribing')
                     : t('blog.newsletter.subscribe', 'Subscribe Now')}
                 </button>
               </form>
               {newsletterStatus === 'success' && (
-                <p className="text-green-600 text-sm mt-3">Successfully subscribed! Check your inbox.</p>
+                <p className="text-green-600 text-sm mt-3">{t('blog.subscribeSuccess')}</p>
               )}
               {newsletterStatus === 'error' && (
-                <p className="text-red-500 text-sm mt-3">Something went wrong. Please try again.</p>
+                <p className="text-red-500 text-sm mt-3">{t('blog.subscribeError')}</p>
               )}
               <p className="text-sm text-gray-500 mt-3">
                 {t('blog.newsletter.privacy', 'No spam, unsubscribe at any time. Privacy policy applies.')}

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useTranslation } from 'react-i18next';
 import { 
   MapPin, 
   Phone, 
@@ -15,6 +16,7 @@ import { newsletterSchema } from '../utils/formValidation';
 import { submitNewsletter } from '../utils/api';
 
 const Footer = () => {
+  const { t } = useTranslation();
   const [submitStatus, setSubmitStatus] = useState(null);
 
   const {
@@ -41,57 +43,64 @@ const Footer = () => {
 
   const footerSections = {
     solutions: {
-      title: 'Solutions',
+      title: t('footer.solutions'),
       links: [
-        { name: 'For Nurses', href: '#' },
-        { name: 'For Facilities Management', href: '#' },
-        { name: 'For Executives', href: '#' },
-        { name: 'Equipment Tracking', href: '#' },
-        { name: 'Real-time Visibility', href: '#' },
-        { name: 'Analytics Dashboard', href: '#' }
+        { name: t('footer.links.forNurses'), href: '#' },
+        { name: t('footer.links.forFacilities'), href: '#' },
+        { name: t('footer.links.forExecutives'), href: '#' },
+        { name: t('footer.links.equipmentTracking'), href: '#' },
+        { name: t('footer.links.realTimeVisibility'), href: '#' },
+        { name: t('footer.links.analyticsDashboard'), href: '#' }
       ]
     },
     resources: {
-      title: 'Resources',
+      title: t('footer.resources'),
       links: [
-        { name: 'Case Studies', href: '#' },
-        { name: 'White Papers', href: '#' },
-        { name: 'Blog', href: '/blog', internal: true },
-        { name: 'Documentation', href: '#' },
-        { name: 'API Reference', href: '#' },
-        { name: 'Integration Guides', href: '#' }
+        { name: t('footer.links.caseStudies'), href: '#' },
+        { name: t('footer.links.whitePapers'), href: '#' },
+        { name: t('nav.blog'), href: '/blog', internal: true },
+        { name: t('footer.links.documentation'), href: '#' },
+        { name: t('footer.links.apiReference'), href: '#' },
+        { name: t('footer.links.integrationGuides'), href: '#' }
       ]
     },
     support: {
-      title: 'Support',
+      title: t('footer.support'),
       links: [
-        { name: 'Help Center', href: '#' },
-        { name: 'Contact Support', href: '/contact', internal: true },
-        { name: 'System Status', href: '#' },
-        { name: 'Training', href: '#' },
-        { name: 'Implementation', href: '#' },
-        { name: 'Community Forum', href: '#' }
+        { name: t('footer.links.helpCenter'), href: '#' },
+        { name: t('footer.links.contactSupport'), href: '/contact', internal: true },
+        { name: t('footer.links.systemStatus'), href: '#' },
+        { name: t('footer.links.training'), href: '#' },
+        { name: t('footer.links.implementation'), href: '#' },
+        { name: t('footer.links.communityForum'), href: '#' }
       ]
     },
     company: {
-      title: 'Company',
+      title: t('footer.company'),
       links: [
-        { name: 'About Us', href: '/about', internal: true },
-        { name: 'Our Team', href: '/team', internal: true },
-        { name: 'Careers', href: '#' },
-        { name: 'Press', href: '#' },
-        { name: 'Partners', href: '#' },
-        { name: 'Investors', href: '#' }
+        { name: t('footer.links.aboutUs'), href: '/about', internal: true },
+        { name: t('footer.links.ourTeam'), href: '/team', internal: true },
+        { name: t('footer.links.careers'), href: '#' },
+        { name: t('footer.links.press'), href: '#' },
+        { name: t('footer.links.partners'), href: '#' },
+        { name: t('footer.links.investors'), href: '#' }
       ]
     }
   };
 
   const legalLinks = [
-    { name: 'Privacy Policy', href: '#' },
-    { name: 'Terms of Service', href: '#' },
-    { name: 'Cookie Policy', href: '#' },
-    { name: 'HIPAA Compliance', href: '#' },
-    { name: 'Security', href: '#' }
+    { name: t('footer.privacyPolicy'), href: '#' },
+    { name: t('footer.termsOfService'), href: '#' },
+    { name: t('footer.cookiePolicy'), href: '#' },
+    { name: t('footer.hipaaCompliance'), href: '#' },
+    { name: t('footer.security'), href: '#' }
+  ];
+
+  const certLabels = [
+    t('footer.certLabels.hipaa'),
+    t('footer.certLabels.soc2'),
+    t('footer.certLabels.iso'),
+    t('footer.certLabels.award'),
   ];
 
   const currentYear = new Date().getFullYear();
@@ -104,11 +113,10 @@ const Footer = () => {
           <div className="grid lg:grid-cols-2 gap-8 items-center">
             <div>
               <h3 className="text-2xl md:text-3xl font-bold mb-4">
-                Stay Connected with Healthcare Innovation
+                {t('footer.stayConnected')}
               </h3>
               <p className="text-blue-100 text-lg">
-                Get the latest updates on healthcare technology trends, product announcements, 
-                and industry insights delivered to your inbox.
+                {t('footer.stayConnectedDesc')}
               </p>
             </div>
             <div>
@@ -118,7 +126,7 @@ const Footer = () => {
                     <input
                       {...register('email')}
                       type="email"
-                      placeholder="Enter your email address"
+                      placeholder={t('footer.emailPlaceholder')}
                       className="w-full px-4 py-3 text-gray-900 bg-white border border-transparent rounded-lg focus:ring-2 focus:ring-white focus:border-transparent"
                     />
                     {errors.email && (
@@ -136,7 +144,7 @@ const Footer = () => {
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
                     ) : (
                       <>
-                        Subscribe
+                        {t('footer.subscribe')}
                         <ArrowRight size={16} />
                       </>
                     )}
@@ -147,14 +155,14 @@ const Footer = () => {
                 {submitStatus === 'success' && (
                   <div className="flex items-center gap-2 text-green-300">
                     <CheckCircle size={16} />
-                    <span className="text-sm">Successfully subscribed! Check your email for confirmation.</span>
+                    <span className="text-sm">{t('footer.subscribeSuccess')}</span>
                   </div>
                 )}
 
                 {submitStatus === 'error' && (
                   <div className="flex items-center gap-2 text-red-300">
                     <AlertCircle size={16} />
-                    <span className="text-sm">Error subscribing. Please try again.</span>
+                    <span className="text-sm">{t('footer.subscribeError')}</span>
                   </div>
                 )}
               </form>
@@ -173,13 +181,12 @@ const Footer = () => {
                 InSite Health System
               </h3>
               <p className="text-gray-300 mt-2">
-                Real-time Equipment Visibility for Modern Hospitals
+                {t('footer.tagline')}
               </p>
             </div>
             
             <p className="text-gray-400 leading-relaxed mb-6">
-              Transforming healthcare operations through intelligent equipment tracking 
-              and visibility solutions. Trusted by 500+ healthcare facilities worldwide.
+              {t('footer.transformingDesc')}
             </p>
 
             {/* Contact Info */}
@@ -244,15 +251,10 @@ const Footer = () => {
         <div className="mt-16 pt-8 border-t border-gray-800">
           <div className="text-center mb-8">
             <h4 className="text-lg font-semibold text-white mb-4">
-              Certifications & Compliance
+              {t('footer.certifications')}
             </h4>
             <div className="flex flex-wrap justify-center gap-8 items-center">
-              {[
-                'HIPAA Compliant',
-                'SOC 2 Type II',
-                'ISO 27001',
-                'Healthcare Innovation Award 2023'
-              ].map((cert, index) => (
+              {certLabels.map((cert, index) => (
                 <div key={index} className="text-center">
                   <div className="w-16 h-16 bg-gray-800 rounded-xl flex items-center justify-center mb-2 mx-auto">
                     <CheckCircle className="text-insite-cyan" size={24} />
@@ -270,7 +272,7 @@ const Footer = () => {
         <div className="container-custom py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-gray-400 text-sm">
-              © {currentYear} InSite Health System. All rights reserved.
+              {t('footer.copyright', { year: currentYear })}
             </div>
             
             {/* Legal Links */}

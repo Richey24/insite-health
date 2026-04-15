@@ -24,20 +24,20 @@ const normalisePost = (raw) => {
   return patched;
 };
 
-// Category slug → display name mapping
-const CATEGORY_LABELS = {
-  'healthcare-technology': 'Healthcare Technology',
-  'ai-ml': 'AI & Machine Learning',
-  'digital-health': 'Digital Health',
-  'telemedicine': 'Telemedicine',
-  'compliance': 'Compliance',
-  'asset-management': 'Asset Management',
-  'data-analytics': 'Data Analytics',
-  'mobile-health': 'Mobile Health',
-  'patient-safety': 'Patient Safety',
-  'healthcare-economics': 'Healthcare Economics',
-  'case-study': 'Case Study',
-  'technology': 'Technology',
+// Category slug → i18n key mapping
+const CATEGORY_KEYS = {
+  'healthcare-technology': 'blog.categories.healthcareTech',
+  'ai-ml': 'blog.categories.aiMl',
+  'digital-health': 'blog.categories.digitalHealth',
+  'telemedicine': 'blog.categories.telemedicine',
+  'compliance': 'blog.categories.compliance',
+  'asset-management': 'blog.categories.assetManagement',
+  'data-analytics': 'blog.categories.dataAnalytics',
+  'mobile-health': 'blog.categories.mobileHealth',
+  'patient-safety': 'blog.categories.patientSafety',
+  'healthcare-economics': 'blog.categories.healthcareEconomics',
+  'case-study': 'blog.categories.caseStudy',
+  'technology': 'blog.categories.technology',
 };
 
 const BlogPostCard = ({ rawPost, getTranslatedPost, currentLanguage, formatDate, t }) => {
@@ -126,10 +126,10 @@ const BlogCategory = () => {
   const [error, setError] = useState(false);
 
   const normalizedSlug = (name || '').toLowerCase().replace(/\s+/g, '-');
-  const displayName =
-    CATEGORY_LABELS[normalizedSlug] ||
-    name?.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) ||
-    'Category';
+  const categoryKey = CATEGORY_KEYS[normalizedSlug];
+  const displayName = categoryKey
+    ? t(categoryKey)
+    : name?.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) || 'Category';
 
   const formatDate = (date) => {
     if (!date) return '';
@@ -181,7 +181,7 @@ const BlogCategory = () => {
             </div>
             {!loading && !error && (
               <p className="text-white/80 mt-4">
-                {posts.length} {posts.length === 1 ? 'article' : 'articles'} in this category
+                {t('blog.articleCount', { count: posts.length })}
               </p>
             )}
           </div>
@@ -196,7 +196,7 @@ const BlogCategory = () => {
             className="inline-flex items-center text-insite-blue font-semibold hover:text-insite-blue/80 transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to All Posts
+            {t('blog.backToAllPosts')}
           </Link>
         </div>
 
@@ -209,7 +209,7 @@ const BlogCategory = () => {
           </div>
         ) : error ? (
           <div className="text-center py-20">
-            <p className="text-red-500 text-lg">Failed to load posts. Please try again later.</p>
+            <p className="text-red-500 text-lg">{t('blog.failedToLoad')}</p>
           </div>
         ) : posts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -227,16 +227,16 @@ const BlogCategory = () => {
         ) : (
           <div className="text-center py-20">
             <Tag className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-700 mb-2">No posts found</h2>
+            <h2 className="text-2xl font-bold text-gray-700 mb-2">{t('blog.noPostsFound')}</h2>
             <p className="text-gray-500 mb-8">
-              There are no posts in the "{displayName}" category yet.
+              {t('blog.noPostsInCategoryDesc', { name: displayName })}
             </p>
             <Link
               to="/blog"
               className="bg-insite-blue text-white px-8 py-3 rounded-lg font-semibold hover:bg-insite-blue/90 transition-colors inline-flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              Browse All Posts
+              {t('blog.browseAllPosts')}
             </Link>
           </div>
         )}

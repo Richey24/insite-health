@@ -3,10 +3,12 @@ import { Link } from 'react-router-dom';
 import { FileText, Stethoscope, Settings, TrendingUp, Phone, Mail, MapPin, Clock, CheckCircle, AlertCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useTranslation } from 'react-i18next';
 import { appointmentSchema, contactSchema } from '../utils/formValidation';
 import { submitAppointment, submitContact } from '../utils/api';
 
 const ContactPage = () => {
+  const { t } = useTranslation();
   const [formType, setFormType] = useState('appointment');
   const [appointmentStatus, setAppointmentStatus] = useState(null);
   const [contactStatus, setContactStatus] = useState(null);
@@ -61,26 +63,26 @@ const ContactPage = () => {
   const processSteps = [
     {
       number: "01",
-      title: "Discover",
-      description: "We begin with a focused conversation to understand: Your facility size and structure, Equipment categories to evaluate, Operational pain points, IT and compliance requirements",
+      title: t('about.pilotStep1Title'),
+      description: t('about.pilotStep1Desc'),
       icon: FileText
     },
     {
       number: "02", 
-      title: "Deploy",
-      description: "We design a controlled pilot program: Select 20–40 assets, Identify one unit or floor, Install secure gateways, Configure role-based access, Provide brief staff orientation",
+      title: t('about.pilotStep2Title'),
+      description: t('about.pilotStep2Desc'),
       icon: Settings
     },
     {
       number: "03",
-      title: "Validate", 
-      description: "During the pilot period: Real-time equipment visibility is active, Gateway and system health are monitored, Utilization data is collected, Workflow impact is measured",
+      title: t('about.pilotStep3Title'),
+      description: t('about.pilotStep3Desc'),
       icon: Stethoscope
     },
     {
       number: "04",
-      title: "Scale",
-      description: "At pilot conclusion: Review utilization metrics, Evaluate search time reduction, Identify capital optimization opportunities, Determine next-phase rollout strategy",
+      title: t('about.pilotStep4Title'),
+      description: t('about.pilotStep4Desc'),
       icon: TrendingUp
     }
   ];
@@ -92,12 +94,12 @@ const ContactPage = () => {
         <div className="container-custom">
           <div className="text-center">
             <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-insite-blue mb-4">
-              Contact
+              {t('contact.pageTitle')}
             </h1>
             <nav className="flex items-center justify-center space-x-2 text-sm sm:text-base text-gray-600">
-              <Link to="/" className="hover:text-insite-blue transition-colors">Home</Link>
+              <Link to="/" className="hover:text-insite-blue transition-colors">{t('contact.breadcrumbHome')}</Link>
               <span>/</span>
-              <span className="text-gray-900">Contact</span>
+              <span className="text-gray-900">{t('contact.pageTitle')}</span>
             </nav>
           </div>
         </div>
@@ -108,10 +110,10 @@ const ContactPage = () => {
         <div className="container-custom">
           <div className="text-center mb-12 lg:mb-16">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-insite-blue mb-4">
-              INSITE HEALTH SYSTEMS PROCESS
+              {t('contact.processTitle')}
             </h2>
             <h3 className="text-xl sm:text-2xl lg:text-3xl text-gray-700">
-              Our Pilot Process
+              {t('contact.processSubtitle')}
             </h3>
           </div>
           
@@ -148,10 +150,10 @@ const ContactPage = () => {
         <div className="container-custom">
           <div className="text-center mb-12 lg:mb-16">
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-insite-blue mb-4">
-              GET IN TOUCH
+              {t('contact.getInTouch')}
             </h2>
             <h3 className="text-xl sm:text-2xl lg:text-3xl text-gray-700">
-              Get Free Pilot Consultation?
+              {t('contact.freePilot')}
             </h3>
           </div>
 
@@ -176,7 +178,7 @@ const ContactPage = () => {
                     <div>
                       <input
                         type="text"
-                        placeholder="Name*"
+                        placeholder={t('contact.namePlaceholder')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                         {...registerAppointment('name')}
                       />
@@ -190,9 +192,9 @@ const ContactPage = () => {
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                         {...registerAppointment('patientType')}
                       >
-                        <option value="">Select Patient*</option>
-                        <option value="new">New Patient</option>
-                        <option value="existing">Existing Patient</option>
+                        <option value="">{t('contact.selectPatient')}</option>
+                        <option value="new">{t('contact.newPatient')}</option>
+                        <option value="existing">{t('contact.existingPatient')}</option>
                       </select>
                     </div>
                   </div>
@@ -201,7 +203,7 @@ const ContactPage = () => {
                     <div>
                       <input
                         type="email"
-                        placeholder="Email*"
+                        placeholder={t('contact.emailPlaceholder')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                         {...registerAppointment('email')}
                       />
@@ -213,7 +215,7 @@ const ContactPage = () => {
                     <div>
                       <input
                         type="tel"
-                        placeholder="Phone*"
+                        placeholder={t('contact.phonePlaceholder')}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                         {...registerAppointment('phone')}
                       />
@@ -229,12 +231,12 @@ const ContactPage = () => {
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                         {...registerAppointment('appointmentType')}
                       >
-                        <option value="">Select Service*</option>
-                        <option value="Asset Tracking">Asset Tracking</option>
-                        <option value="Site Monitoring">Site Monitoring</option>
-                        <option value="Capital Planning">Capital Planning</option>
-                        <option value="Mobile Security">Mobile Security</option>
-                        <option value="Pilot Consultation">Pilot Consultation</option>
+                        <option value="">{t('contact.selectService')}</option>
+                        <option value="Asset Tracking">{t('contact.services.assetTracking')}</option>
+                        <option value="Site Monitoring">{t('contact.services.siteMonitoring')}</option>
+                        <option value="Capital Planning">{t('contact.services.capitalPlanning')}</option>
+                        <option value="Mobile Security">{t('contact.services.mobileSecurity')}</option>
+                        <option value="Pilot Consultation">{t('contact.services.pilotConsultation')}</option>
                       </select>
                       {appointmentErrors.appointmentType && (
                         <p className="text-red-500 text-sm mt-1">{appointmentErrors.appointmentType.message}</p>
@@ -253,7 +255,7 @@ const ContactPage = () => {
 
                   <div>
                     <textarea
-                      placeholder="Your Comment..."
+                      placeholder={t('contact.commentPlaceholder')}
                       rows={5}
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                       {...registerAppointment('message')}
@@ -265,18 +267,20 @@ const ContactPage = () => {
                     disabled={isSubmittingAppointment || appointmentStatus === 'loading'}
                     className="w-full bg-insite-orange hover:bg-insite-orange/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {isSubmittingAppointment || appointmentStatus === 'loading' ? 'Sending...' : 'Send Request'}
+                    {isSubmittingAppointment || appointmentStatus === 'loading'
+                      ? t('contact.sending')
+                      : t('contact.sendRequest')}
                   </button>
                   {appointmentStatus === 'success' && (
                     <div className="flex items-center gap-2 mt-3 p-3 bg-green-50 border border-green-200 rounded-lg">
                       <CheckCircle className="h-5 w-5 text-green-600 flex-shrink-0" />
-                      <p className="text-green-700 text-sm">Request sent! We'll contact you within 24 hours.</p>
+                      <p className="text-green-700 text-sm">{t('contact.successMsg')}</p>
                     </div>
                   )}
                   {appointmentStatus === 'error' && (
                     <div className="flex items-center gap-2 mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
                       <AlertCircle className="h-5 w-5 text-red-600 flex-shrink-0" />
-                      <p className="text-red-700 text-sm">Something went wrong. Please try again or call us directly.</p>
+                      <p className="text-red-700 text-sm">{t('contact.errorMsg')}</p>
                     </div>
                   )}
                 </form>
@@ -313,10 +317,9 @@ const ContactPage = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-insite-blue/10 rounded-full mb-4">
                 <Phone className="w-8 h-8 text-insite-blue" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Phone</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('contact.infoPhone')}</h3>
               <p className="text-gray-600">
-                Sales: (555) 123-4567<br />
-                Support: (555) 123-4568
+                (858) 366-3838
               </p>
             </div>
             
@@ -324,10 +327,9 @@ const ContactPage = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-insite-blue/10 rounded-full mb-4">
                 <Mail className="w-8 h-8 text-insite-blue" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Email</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('contact.infoEmail')}</h3>
               <p className="text-gray-600">
-                sales@insitehealth.com<br />
-                support@insitehealth.com
+                info@insitehealthsystems.com
               </p>
             </div>
             
@@ -335,10 +337,10 @@ const ContactPage = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-insite-blue/10 rounded-full mb-4">
                 <MapPin className="w-8 h-8 text-insite-blue" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Address</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('contact.infoAddress')}</h3>
               <p className="text-gray-600">
-                7710 Hazard Center Dr # E<br />
-                California 92108 United States
+                2287 Dunlop St.<br />
+                San Diego, CA 92111
               </p>
             </div>
             
@@ -346,10 +348,10 @@ const ContactPage = () => {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-insite-blue/10 rounded-full mb-4">
                 <Clock className="w-8 h-8 text-insite-blue" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Business Hours</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{t('contact.infoHours')}</h3>
               <p className="text-gray-600">
-                Monday - Friday: 8:00 AM - 6:00 PM PST<br />
-                24/7 Emergency Support Available
+                {t('contact.contactDetails.businessHours')}<br />
+                {t('contact.contactDetails.emergencySupport')}
               </p>
             </div>
           </div>

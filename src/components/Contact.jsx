@@ -240,12 +240,12 @@ const Contact = () => {
                       </div>
 
                       <div>
-                        <label className="form-label">Phone Number *</label>
+                        <label className="form-label">{t('contact.phoneNumber')} {t('contact.required')}</label>
                         <input
                           {...appointmentForm.register('phone')}
                           type="tel"
                           className="form-input"
-                          placeholder="Enter your phone number"
+                          placeholder={t('contact.placeholders.phone')}
                         />
                         {appointmentForm.formState.errors.phone && (
                           <p className="text-red-500 text-sm mt-1">
@@ -255,18 +255,18 @@ const Contact = () => {
                       </div>
 
                       <div>
-                        <label className="form-label">Organization</label>
+                        <label className="form-label">{t('contact.organization')}</label>
                         <input
                           {...appointmentForm.register('organization')}
                           className="form-input"
-                          placeholder="Hospital or organization name"
+                          placeholder={t('contact.placeholders.organization')}
                         />
                       </div>
 
                       <div>
-                        <label className="form-label">Appointment Type *</label>
+                        <label className="form-label">{t('contact.appointmentType')} {t('contact.required')}</label>
                         <select {...appointmentForm.register('appointmentType')} className="form-input">
-                          <option value="">Select appointment type</option>
+                          <option value="">{t('contact.placeholders.appointmentType')}</option>
                           {appointmentTypes.map((type) => (
                             <option key={type} value={type}>{type}</option>
                           ))}
@@ -279,7 +279,7 @@ const Contact = () => {
                       </div>
 
                       <div>
-                        <label className="form-label">Preferred Date *</label>
+                        <label className="form-label">{t('contact.preferredDate')} {t('contact.required')}</label>
                         <input
                           {...appointmentForm.register('preferredDate')}
                           type="date"
@@ -295,9 +295,9 @@ const Contact = () => {
                     </div>
 
                     <div>
-                      <label className="form-label">Preferred Time *</label>
+                      <label className="form-label">{t('contact.preferredTime')} {t('contact.required')}</label>
                       <select {...appointmentForm.register('preferredTime')} className="form-input">
-                        <option value="">Select preferred time</option>
+                        <option value="">{t('contact.placeholders.preferredTime')}</option>
                         {timeSlots.map((slot) => (
                           <option key={slot} value={slot}>{slot}</option>
                         ))}
@@ -310,12 +310,12 @@ const Contact = () => {
                     </div>
 
                     <div>
-                      <label className="form-label">Additional Information</label>
+                      <label className="form-label">{t('contact.additionalInformation')}</label>
                       <textarea
                         {...appointmentForm.register('message')}
                         rows={4}
                         className="form-input"
-                        placeholder="Tell us about your specific needs or questions"
+                        placeholder={t('contact.placeholders.additionalInfo')}
                       />
                     </div>
 
@@ -341,11 +341,11 @@ const Contact = () => {
                   <form onSubmit={contactForm.handleSubmit(onSubmitContact)} className="space-y-6">
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
-                        <label className="form-label">Full Name *</label>
+                        <label className="form-label">{t('contact.fullName')} {t('contact.required')}</label>
                         <input
                           {...contactForm.register('name')}
                           className="form-input"
-                          placeholder="Enter your full name"
+                          placeholder={t('contact.placeholders.fullName')}
                         />
                         {contactForm.formState.errors.name && (
                           <p className="text-red-500 text-sm mt-1">
@@ -355,12 +355,12 @@ const Contact = () => {
                       </div>
 
                       <div>
-                        <label className="form-label">Email Address *</label>
+                        <label className="form-label">{t('contact.emailAddress')} {t('contact.required')}</label>
                         <input
                           {...contactForm.register('email')}
                           type="email"
                           className="form-input"
-                          placeholder="Enter your email"
+                          placeholder={t('contact.placeholders.email')}
                         />
                         {contactForm.formState.errors.email && (
                           <p className="text-red-500 text-sm mt-1">
@@ -371,11 +371,11 @@ const Contact = () => {
                     </div>
 
                     <div>
-                      <label className="form-label">Subject *</label>
+                      <label className="form-label">{t('contact.subject')} {t('contact.required')}</label>
                       <input
                         {...contactForm.register('subject')}
                         className="form-input"
-                        placeholder="Enter message subject"
+                        placeholder={t('contact.placeholders.subject')}
                       />
                       {contactForm.formState.errors.subject && (
                         <p className="text-red-500 text-sm mt-1">
@@ -385,12 +385,12 @@ const Contact = () => {
                     </div>
 
                     <div>
-                      <label className="form-label">Message *</label>
+                      <label className="form-label">{t('contact.message')} {t('contact.required')}</label>
                       <textarea
                         {...contactForm.register('message')}
                         rows={6}
                         className="form-input"
-                        placeholder="Enter your message"
+                        placeholder={t('contact.placeholders.message')}
                       />
                       {contactForm.formState.errors.message && (
                         <p className="text-red-500 text-sm mt-1">

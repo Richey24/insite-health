@@ -169,7 +169,7 @@ const BlogTag = () => {
           <div className="text-center">
             <div className="inline-flex items-center gap-2 bg-insite-cyan/20 text-insite-cyan px-4 py-2 rounded-full text-sm font-semibold mb-4">
               <Tag className="h-4 w-4" />
-              Tag
+              {t('blog.tagLabel')}
             </div>
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{displayTag}</h1>
             <div className="flex items-center justify-center space-x-2 text-white/90">
@@ -181,7 +181,7 @@ const BlogTag = () => {
             </div>
             {!loading && !error && (
               <p className="text-white/80 mt-4">
-                {posts.length} {posts.length === 1 ? 'article' : 'articles'} tagged with this topic
+                {t('blog.tagCount', { count: posts.length })}
               </p>
             )}
           </div>
@@ -196,7 +196,7 @@ const BlogTag = () => {
             className="inline-flex items-center text-insite-blue font-semibold hover:text-insite-blue/80 transition-colors"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
-            Back to All Posts
+            {t('blog.backToAllPosts')}
           </Link>
         </div>
 
@@ -209,7 +209,7 @@ const BlogTag = () => {
           </div>
         ) : error ? (
           <div className="text-center py-20">
-            <p className="text-red-500 text-lg">Failed to load posts. Please try again later.</p>
+            <p className="text-red-500 text-lg">{t('blog.failedToLoad')}</p>
           </div>
         ) : posts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -227,16 +227,16 @@ const BlogTag = () => {
         ) : (
           <div className="text-center py-20">
             <Tag className="h-16 w-16 text-gray-300 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-700 mb-2">No posts found</h2>
+            <h2 className="text-2xl font-bold text-gray-700 mb-2">{t('blog.noPostsFound')}</h2>
             <p className="text-gray-500 mb-8">
-              There are no posts tagged with "{displayTag}" yet.
+              {t('blog.noPostsTaggedDesc', { tag: displayTag })}
             </p>
             <Link
               to="/blog"
               className="bg-insite-blue text-white px-8 py-3 rounded-lg font-semibold hover:bg-insite-blue/90 transition-colors inline-flex items-center gap-2"
             >
               <ArrowLeft className="h-4 w-4" />
-              Browse All Posts
+              {t('blog.browseAllPosts')}
             </Link>
           </div>
         )}

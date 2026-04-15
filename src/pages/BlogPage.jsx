@@ -115,6 +115,10 @@ const BlogPage = () => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [newsletterStatus, setNewsletterStatus] = useState(null);
 
+  // ── Tags sidebar (dynamic) ───────────────────────────────────────────────────
+  const [tags, setTags] = useState([]);
+  const [tagsLoading, setTagsLoading] = useState(true);
+
   const categories = [
     { name: t('blog.categories.healthcareTech'), count: 15 },
     { name: t('blog.categories.digitalHealth'), count: 12 },
@@ -123,12 +127,6 @@ const BlogPage = () => {
     { name: t('blog.categories.telemedicine'), count: 10 },
     { name: t('blog.categories.mobileHealth'), count: 9 },
     { name: t('blog.categories.dataAnalytics'), count: 7 }
-  ];
-
-  const tags = [
-    "Healthcare", "Technology", "AI", "HIPAA", "Telemedicine",
-    "Asset Tracking", "Mobile Apps", "Data Analytics", "Security",
-    "Compliance", "Patient Care", "Hospital Management"
   ];
 
   const formatDate = (date) => {
@@ -182,6 +180,18 @@ const BlogPage = () => {
       }
     };
     fetchRecent();
+  }, []);
+
+  // Fetch tags dynamically from API
+  useEffect(() => {
+    setTagsLoading(true);
+    fetch(`${API_BASE_URL}/api/blog/tags`)
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => {
+        if (data?.tags) setTags(data.tags);
+      })
+      .catch(() => {})
+      .finally(() => setTagsLoading(false));
   }, []);
 
   useEffect(() => {
@@ -282,10 +292,12 @@ const BlogPage = () => {
       <div className="bg-white rounded-xl shadow-lg p-6">
         <h3 className="text-xl font-bold text-gray-900 mb-4">{t('blog.tags')}</h3>
         <div className="flex flex-wrap gap-2">
-          {tags.map((tag, index) => (
+          {tagsLoading ? (
+            <p className="text-sm text-gray-500">{t('blog.loadingTags')}</p>
+          ) : tags.map((tag, index) => (
             <Link
               key={index}
-              to={`/blog/tag/${tag.toLowerCase()}`}
+              to={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`}
               className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-insite-blue hover:text-white transition-colors"
             >
               <Tag className="h-3 w-3 mr-1" />
@@ -331,17 +343,19 @@ const BlogPage = () => {
               </div>
             ) : error ? (
               <div className="text-center py-24">
-                <p className="text-red-500 mb-4">{error}</p>
+                <p className="text-red-500 mb-4">{t('blog.failedToLoad')}</p>
                 <button
                   onClick={() => fetchPosts(currentPage, activeSearch)}
                   className="text-insite-blue hover:underline"
                 >
-                  Try again
+                  {t('blog.tryAgain')}
                 </button>
               </div>
             ) : posts.length === 0 ? (
               <div className="text-center py-24">
-                <p className="text-gray-500 text-lg">No posts found{activeSearch ? ` for "${activeSearch}"` : ''}.</p>
+                <p className="text-gray-500 text-lg">
+                  {t('blog.noPostsFound')}{activeSearch ? ` for "${activeSearch}"` : ''}.
+                </p>
               </div>
             ) : (
               <>
@@ -415,14 +429,14 @@ const BlogPage = () => {
               disabled={newsletterStatus === 'loading'}
               className="bg-white text-insite-blue px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              {newsletterStatus === 'loading' ? 'Subscribing...' : t('blog.newsletter.subscribe')}
+              {newsletterStatus === 'loading' ? t('blog.subscribing') : t('blog.newsletter.subscribe')}
             </button>
           </form>
           {newsletterStatus === 'success' && (
-            <p className="text-green-300 text-sm mt-4">Successfully subscribed! Check your inbox.</p>
+            <p className="text-green-300 text-sm mt-4">{t('blog.subscribeSuccess')}</p>
           )}
           {newsletterStatus === 'error' && (
-            <p className="text-red-300 text-sm mt-4">Something went wrong. Please try again.</p>
+            <p className="text-red-300 text-sm mt-4">{t('blog.subscribeError')}</p>
           )}
           <p className="text-white/70 text-sm mt-4">{t('blog.newsletter.privacy')}</p>
         </div>

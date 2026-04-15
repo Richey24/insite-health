@@ -51,10 +51,10 @@ const Header = () => {
       href: '/services',
       submenu: [
         { name: t('nav.services'), href: '/services' },
-        { name: 'Asset Tracking', href: '/services/asset-tracking' },
-        { name: 'Mobile Security', href: '/services/mobile-security' },
-        { name: 'Capital Planning', href: '/services/capital-planning' },
-        { name: 'Site Monitoring', href: '/services/site-monitoring' },
+        { name: t('nav.serviceItems.assetTracking'), href: '/services/asset-tracking' },
+        { name: t('nav.serviceItems.mobileSecurity'), href: '/services/mobile-security' },
+        { name: t('nav.serviceItems.capitalPlanning'), href: '/services/capital-planning' },
+        { name: t('nav.serviceItems.siteMonitoring'), href: '/services/site-monitoring' },
       ]
     },
     {

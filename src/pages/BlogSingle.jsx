@@ -48,6 +48,7 @@ const BlogSingle = () => {
   const [notFound, setNotFound] = useState(false);
   const [recentPosts, setRecentPosts] = useState([]);
   const [comments, setComments] = useState([]);
+  const [sidebarTags, setSidebarTags] = useState([]);
   const [newComment, setNewComment] = useState({ name: '', email: '', website: '', comment: '' });
   const [commentStatus, setCommentStatus] = useState(null); // null | 'loading' | 'success' | 'error'
   const [isLiked, setIsLiked] = useState(false);
@@ -137,10 +138,13 @@ const BlogSingle = () => {
     { name: t('blog.categories.telemedicine'), count: 10 },
   ];
 
-  const tags = [
-    'Healthcare', 'Technology', 'AI', 'HIPAA', 'Telemedicine',
-    'Asset Tracking', 'Mobile Apps', 'Data Analytics', 'Security', 'Compliance',
-  ];
+  // Fetch sidebar tags dynamically
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/blog/tags`)
+      .then((res) => res.ok ? res.json() : null)
+      .then((data) => { if (data?.tags) setSidebarTags(data.tags); })
+      .catch(() => {});
+  }, []);
 
   const formatDate = (date) => {
     if (!date) return '';
@@ -392,7 +396,7 @@ const BlogSingle = () => {
                             <div>
                               <span className="font-semibold text-gray-900 text-sm">{c.name}</span>
                               <p className="text-xs text-gray-500">
-                                {new Date(c.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+                                {new Date(c.createdAt).toLocaleDateString(i18n.language, { year: 'numeric', month: 'long', day: 'numeric' })}
                               </p>
                             </div>
                           </div>
@@ -555,10 +559,10 @@ const BlogSingle = () => {
             <div className="bg-white rounded-xl shadow-lg p-6">
               <h3 className="text-xl font-bold text-gray-900 mb-4">{t('blog.tags')}</h3>
               <div className="flex flex-wrap gap-2">
-                {tags.map((tag, index) => (
+                {sidebarTags.map((tag, index) => (
                   <Link
                     key={index}
-                    to={`/blog/tag/${tag.toLowerCase()}`}
+                    to={`/blog/tag/${tag.toLowerCase().replace(/\s+/g, '-')}`}
                     className="inline-flex items-center px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-insite-blue hover:text-white transition-colors"
                   >
                     <Tag className="h-3 w-3 mr-1" />

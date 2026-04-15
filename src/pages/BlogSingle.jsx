@@ -67,7 +67,8 @@ const BlogSingle = () => {
       })
       .then(async (data) => {
         if (cancelled) return;
-        const raw = data.post || data;
+        // API response shape: { success, data: { ...post } }
+        const raw = data.data || data.post || data;
         const normalised = normalisePost(raw);
         const translated = await getTranslatedPost(normalised, currentLanguage);
         if (!cancelled) {
@@ -94,7 +95,7 @@ const BlogSingle = () => {
       .then((res) => res.ok ? res.json() : null)
       .then(async (data) => {
         if (!data || cancelled) return;
-        const raw = data.post || data;
+        const raw = data.data || data.post || data;
         const normalised = normalisePost(raw);
         const translated = await getTranslatedPost(normalised, currentLanguage);
         if (!cancelled) setPost(translated);
@@ -108,7 +109,7 @@ const BlogSingle = () => {
       .then((res) => res.ok ? res.json() : null)
       .then(async (data) => {
         if (!data) return;
-        const posts = (data.posts || data).filter((p) => p.slug !== slug).slice(0, 3);
+        const posts = (data.data || data.posts || []).filter((p) => p.slug !== slug).slice(0, 3);
         const translated = await Promise.all(
           posts.map((p) => getTranslatedPost(normalisePost(p), currentLanguage))
         );
@@ -231,8 +232,8 @@ const BlogSingle = () => {
               {/* Featured Image */}
               <div className="relative">
                 <img
-                  src={post.featuredImage}
-                  alt={post.title}
+                  src={post.featuredImage?.url || post.featuredImage}
+                  alt={post.featuredImage?.altText || post.title}
                   className="w-full h-64 md:h-80 object-cover"
                 />
                 <div className="absolute top-4 left-4">
@@ -509,10 +510,10 @@ const BlogSingle = () => {
                 <div className="space-y-4">
                   {recentPosts.map((rp) => (
                     <div key={rp.id || rp._id} className="flex space-x-3 group">
-                      {rp.featuredImage && (
+                      {(rp.featuredImage?.url || rp.featuredImage) && (
                         <img
-                          src={rp.featuredImage}
-                          alt={rp.title}
+                          src={rp.featuredImage?.url || rp.featuredImage}
+                          alt={rp.featuredImage?.altText || rp.title}
                           className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
                         />
                       )}
@@ -580,10 +581,10 @@ const BlogSingle = () => {
                   to={`/blog/${rp.slug}`}
                   className="group bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden"
                 >
-                  {rp.featuredImage && (
+                  {(rp.featuredImage?.url || rp.featuredImage) && (
                     <img
-                      src={rp.featuredImage}
-                      alt={rp.title}
+                      src={rp.featuredImage?.url || rp.featuredImage}
+                      alt={rp.featuredImage?.altText || rp.title}
                       className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   )}

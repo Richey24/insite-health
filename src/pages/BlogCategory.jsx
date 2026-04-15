@@ -62,10 +62,10 @@ const BlogPostCard = ({ rawPost, getTranslatedPost, currentLanguage, formatDate,
   return (
     <article className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
       <div className="relative overflow-hidden">
-        {post.featuredImage && (
+        {(post.featuredImage?.url || post.featuredImage) && (
           <img
-            src={post.featuredImage}
-            alt={post.title}
+            src={post.featuredImage?.url || post.featuredImage}
+            alt={post.featuredImage?.altText || post.title}
             className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
           />
         )}
@@ -146,7 +146,7 @@ const BlogCategory = () => {
       .then((res) => res.ok ? res.json() : Promise.reject())
       .then(async (data) => {
         if (cancelled) return;
-        const raw = (data.posts || data).map(normalisePost).filter(Boolean);
+        const raw = (data.data || data.posts || []).map(normalisePost).filter(Boolean);
         const translated = await Promise.all(
           raw.map((p) => getTranslatedPost(p, currentLanguage))
         );

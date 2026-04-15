@@ -35,8 +35,8 @@ const BlogPostCard = ({ rawPost, getTranslatedPost, currentLanguage, formatDate,
     <article className="bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden group">
       <div className="relative overflow-hidden">
         <img
-          src={post.featuredImage}
-          alt={post.title}
+          src={post.featuredImage?.url || post.featuredImage}
+          alt={post.featuredImage?.altText || post.title}
           className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-300"
         />
         <div className="absolute top-4 left-4">
@@ -240,8 +240,8 @@ const BlogPage = () => {
             return (
               <div key={rp._id || rp.id} className="flex space-x-3 group">
                 <img
-                  src={rp.featuredImage}
-                  alt={title}
+                  src={rp.featuredImage?.url || rp.featuredImage}
+                  alt={rp.featuredImage?.altText || title}
                   className="w-16 h-16 object-cover rounded-lg flex-shrink-0"
                 />
                 <div>

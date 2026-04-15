@@ -118,8 +118,8 @@ const BlogManagement = () => {
       const res = await authFetch(`${API_BASE}/api/blog/posts/${postId}`, { method: 'DELETE' });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || 'Delete failed.');
-      setPosts((prev) => prev.filter((p) => p._id !== postId));
       setSelectedPosts((prev) => prev.filter((id) => id !== postId));
+      await fetchPosts(); // re-fetch so pagination.total (and stats) reflects the deletion
     } catch (err) {
       alert(err.message);
     }

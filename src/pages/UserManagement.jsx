@@ -202,7 +202,7 @@ const UserManagement = () => {
                   value={form.name}
                   onChange={e => setForm({ ...form, name: e.target.value })}
                   placeholder="Jane Smith"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                 />
               </div>
               <div>
@@ -213,7 +213,7 @@ const UserManagement = () => {
                   value={form.email}
                   onChange={e => setForm({ ...form, email: e.target.value })}
                   placeholder="jane@example.com"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                 />
               </div>
               <div>
@@ -224,7 +224,7 @@ const UserManagement = () => {
                   value={form.password}
                   onChange={e => setForm({ ...form, password: e.target.value })}
                   placeholder="Min. 8 characters"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                 />
               </div>
               <div>
@@ -232,7 +232,7 @@ const UserManagement = () => {
                 <select
                   value={form.role}
                   onChange={e => setForm({ ...form, role: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                 >
                   <option value="author">Writer (Author)</option>
                   <option value="editor">Editor</option>

@@ -418,7 +418,7 @@ const BlogSingle = () => {
                           value={newComment.name}
                           onChange={(e) => setNewComment({ ...newComment, name: e.target.value })}
                           placeholder={t('blog.commentName')}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                         />
                       </div>
                       <div>
@@ -431,7 +431,7 @@ const BlogSingle = () => {
                           value={newComment.email}
                           onChange={(e) => setNewComment({ ...newComment, email: e.target.value })}
                           placeholder={t('blog.commentEmail')}
-                          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                          className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                         />
                       </div>
                     </div>
@@ -445,7 +445,7 @@ const BlogSingle = () => {
                         value={newComment.website}
                         onChange={(e) => setNewComment({ ...newComment, website: e.target.value })}
                         placeholder={t('blog.commentWebsite')}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                       />
                     </div>
 
@@ -458,7 +458,7 @@ const BlogSingle = () => {
                         required
                         value={newComment.comment}
                         onChange={(e) => setNewComment({ ...newComment, comment: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                         placeholder={t('blog.commentMessage')}
                       />
                     </div>
@@ -495,7 +495,7 @@ const BlogSingle = () => {
                 <input
                   type="text"
                   placeholder={t('blog.searchPlaceholder')}
-                  className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                  className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                 />
                 <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-insite-blue transition-colors">
                   <Search className="h-5 w-5" />

@@ -73,7 +73,7 @@ const Field = ({ label, hint, children }) => (
 const Input = (props) => (
   <input
     {...props}
-    className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent ${props.className ?? ''}`}
+    className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:ring-2 focus:ring-insite-blue focus:border-transparent ${props.className ?? ''}`}
   />
 );
 
@@ -81,7 +81,7 @@ const Textarea = ({ rows = 3, ...props }) => (
   <textarea
     rows={rows}
     {...props}
-    className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent resize-none ${props.className ?? ''}`}
+    className={`w-full px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-900 bg-white focus:ring-2 focus:ring-insite-blue focus:border-transparent resize-none ${props.className ?? ''}`}
   />
 );
 
@@ -322,7 +322,7 @@ const FeaturedImagePanel = ({ t, featuredImage, onChange, authFetch }) => {
             onChange={e => setUrlInput(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && applyUrl()}
             placeholder={t('editor.featuredImageUrlPlaceholder')}
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-xs focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+            className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-xs text-gray-900 bg-white focus:ring-2 focus:ring-insite-blue focus:border-transparent"
           />
           <button type="button" onClick={applyUrl} className="px-2 py-2 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-600 transition-colors">
             <Check className="h-3.5 w-3.5" />
@@ -388,7 +388,7 @@ const CategoriesPanel = ({ t, categories, allCategories, onChange, onAddCategory
             onChange={e => setNewCat(e.target.value)}
             onKeyDown={e => e.key === 'Enter' && handleAdd()}
             placeholder={t('editor.addCategoryPlaceholder')}
-            className="flex-1 px-2.5 py-1.5 border border-gray-300 rounded-md text-xs focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+            className="flex-1 px-2.5 py-1.5 border border-gray-300 rounded-md text-xs text-gray-900 bg-white focus:ring-2 focus:ring-insite-blue focus:border-transparent"
           />
           <button
             type="button"

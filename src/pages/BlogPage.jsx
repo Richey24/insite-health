@@ -220,7 +220,7 @@ const BlogPage = () => {
             placeholder={t('blog.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+            className="w-full pl-4 pr-12 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent"
           />
           <button
             type="submit"
@@ -407,7 +407,7 @@ const BlogPage = () => {
               value={newsletterEmail}
               onChange={(e) => setNewsletterEmail(e.target.value)}
               placeholder={t('blog.newsletter.placeholder')}
-              className="flex-1 px-6 py-3 rounded-lg border-0 focus:ring-2 focus:ring-white/50"
+              className="flex-1 px-6 py-3 rounded-lg border-0 bg-white text-gray-900 focus:ring-2 focus:ring-white/50"
               required
             />
             <button

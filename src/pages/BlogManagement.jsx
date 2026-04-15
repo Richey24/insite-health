@@ -288,13 +288,13 @@ const BlogManagement = () => {
                     placeholder="Search posts..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-9 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                    className="pl-9 pr-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                   />
                 </div>
                 <select
                   value={statusFilter}
                   onChange={(e) => { setStatusFilter(e.target.value); setPagination((p) => ({ ...p, page: 1 })); }}
-                  className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                  className="border border-gray-300 rounded-lg px-3 py-2 bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                 >
                   <option value="all">All Status</option>
                   <option value="published">Published</option>
@@ -480,7 +480,7 @@ const BlogManagement = () => {
                   required
                   value={pwForm.currentPassword}
                   onChange={(e) => setPwForm({ ...pwForm, currentPassword: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                 />
               </div>
               <div>
@@ -490,7 +490,7 @@ const BlogManagement = () => {
                   required
                   value={pwForm.newPassword}
                   onChange={(e) => setPwForm({ ...pwForm, newPassword: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                 />
               </div>
               <div>
@@ -500,7 +500,7 @@ const BlogManagement = () => {
                   required
                   value={pwForm.confirmPassword}
                   onChange={(e) => setPwForm({ ...pwForm, confirmPassword: e.target.value })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent"
                 />
               </div>
               <div className="flex items-center gap-3 pt-2">

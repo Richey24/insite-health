@@ -119,7 +119,7 @@ const Footer = () => {
                       {...register('email')}
                       type="email"
                       placeholder="Enter your email address"
-                      className="w-full px-4 py-3 text-gray-900 border border-transparent rounded-lg focus:ring-2 focus:ring-white focus:border-transparent"
+                      className="w-full px-4 py-3 text-gray-900 bg-white border border-transparent rounded-lg focus:ring-2 focus:ring-white focus:border-transparent"
                     />
                     {errors.email && (
                       <p className="text-red-300 text-sm mt-1">

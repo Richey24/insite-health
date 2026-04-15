@@ -177,7 +177,7 @@ const ContactPage = () => {
                       <input
                         type="text"
                         placeholder="Name*"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                         {...registerAppointment('name')}
                       />
                       {appointmentErrors.name && (
@@ -187,7 +187,7 @@ const ContactPage = () => {
                     
                     <div>
                       <select 
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                         {...registerAppointment('patientType')}
                       >
                         <option value="">Select Patient*</option>
@@ -202,7 +202,7 @@ const ContactPage = () => {
                       <input
                         type="email"
                         placeholder="Email*"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                         {...registerAppointment('email')}
                       />
                       {appointmentErrors.email && (
@@ -214,7 +214,7 @@ const ContactPage = () => {
                       <input
                         type="tel"
                         placeholder="Phone*"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                         {...registerAppointment('phone')}
                       />
                       {appointmentErrors.phone && (
@@ -226,7 +226,7 @@ const ContactPage = () => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <select
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                         {...registerAppointment('appointmentType')}
                       >
                         <option value="">Select Service*</option>
@@ -244,7 +244,7 @@ const ContactPage = () => {
                     <div>
                       <input
                         type="date"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                         min={today}
                         {...registerAppointment('preferredDate')}
                       />
@@ -255,7 +255,7 @@ const ContactPage = () => {
                     <textarea
                       placeholder="Your Comment..."
                       rows={5}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 focus:ring-2 focus:ring-insite-blue focus:border-transparent transition-all duration-200"
                       {...registerAppointment('message')}
                     />
                   </div>

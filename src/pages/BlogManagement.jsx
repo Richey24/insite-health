@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { 
   Plus, 
@@ -23,6 +23,7 @@ const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 const BlogManagement = () => {
   const { user, logout, hasPermission, authFetch } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [posts, setPosts] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -30,6 +31,7 @@ const BlogManagement = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [pagination, setPagination] = useState({ page: 1, total: 0, limit: 20 });
+  const [stats, setStats] = useState({ total: 0, published: 0, drafts: 0, archived: 0 });
 
   // Change password state
   const [showChangePassword, setShowChangePassword] = useState(false);
@@ -70,7 +72,17 @@ const BlogManagement = () => {
     }
   };
 
-  const fetchPosts = async () => {
+  const fetchStats = useCallback(async () => {
+    try {
+      const res = await authFetch(`${API_BASE}/api/blog/stats`);
+      const data = await res.json();
+      if (res.ok && data.success) setStats(data.data);
+    } catch (_) {
+      // stats are non-critical — silently ignore
+    }
+  }, [authFetch]);
+
+  const fetchPosts = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -89,12 +101,18 @@ const BlogManagement = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [authFetch, statusFilter, pagination.limit, pagination.page]);
 
+  // Re-fetch posts when filter or page changes
   useEffect(() => {
     fetchPosts();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [statusFilter, pagination.page]);
+  }, [fetchPosts]);
+
+  // Re-fetch stats on every navigation to this page (covers navigate-back from editor)
+  // and on initial mount
+  useEffect(() => {
+    fetchStats();
+  }, [location.key, fetchStats]);
 
   const formatDate = (dateStr) => {
     if (!dateStr) return 'Not set';
@@ -119,7 +137,7 @@ const BlogManagement = () => {
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || 'Delete failed.');
       setSelectedPosts((prev) => prev.filter((id) => id !== postId));
-      await fetchPosts(); // re-fetch so pagination.total (and stats) reflects the deletion
+      await Promise.all([fetchPosts(), fetchStats()]);
     } catch (err) {
       alert(err.message);
     }
@@ -132,7 +150,7 @@ const BlogManagement = () => {
       await Promise.all(selectedPosts.map((id) =>
         authFetch(`${API_BASE}/api/blog/posts/${id}`, { method: 'DELETE' })
       ));
-      await fetchPosts();
+      await Promise.all([fetchPosts(), fetchStats()]);
       setSelectedPosts([]);
     } else {
       const status = action === 'publish' ? 'published' : 'draft';
@@ -142,7 +160,7 @@ const BlogManagement = () => {
           body: JSON.stringify({ status }),
         })
       ));
-      await fetchPosts();
+      await Promise.all([fetchPosts(), fetchStats()]);
       setSelectedPosts([]);
     }
   };
@@ -158,12 +176,8 @@ const BlogManagement = () => {
     return matchesSearch;
   });
 
-  const stats = {
-    total: pagination.total,
-    published: posts.filter((p) => p.status === 'published').length,
-    drafts: posts.filter((p) => p.status === 'draft').length,
-    archived: posts.filter((p) => p.status === 'archived').length,
-  };
+  // stats comes from the dedicated /api/blog/stats endpoint — always globally accurate
+  // (not derived from the local page array which only holds the current page)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -246,7 +260,7 @@ const BlogManagement = () => {
                   New Post
                 </Link>
                 <button
-                  onClick={fetchPosts}
+                  onClick={() => { fetchPosts(); fetchStats(); }}
                   className="text-gray-600 hover:text-gray-900 transition-colors"
                   title="Refresh"
                 >
@@ -310,7 +324,7 @@ const BlogManagement = () => {
             <div className="m-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-3 text-red-700">
               <AlertCircle className="h-5 w-5 flex-shrink-0" />
               <span>{error}</span>
-              <button onClick={fetchPosts} className="ml-auto text-sm underline">Retry</button>
+              <button onClick={() => { fetchPosts(); fetchStats(); }} className="ml-auto text-sm underline">Retry</button>
             </div>
           )}
 

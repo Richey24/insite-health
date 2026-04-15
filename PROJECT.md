@@ -29,7 +29,7 @@ InSite Health Systems is a San Diego-based healthcare technology company special
 | Runtime | Node.js + Express |
 | Database | MongoDB (Azure Cosmos DB) via Mongoose |
 | Auth | JWT (jsonwebtoken) + bcryptjs |
-| Email | Nodemailer (Office365 SMTP) |
+| Email | Nodemailer (Office365 SMTP) — branded HTML templates for all transactional emails |
 | Image Upload | Cloudinary via multer + multer-storage-cloudinary |
 | Security | helmet, express-rate-limit, CORS |
 
@@ -46,9 +46,9 @@ InSite Health Systems is a San Diego-based healthcare technology company special
 - Blog single post (`/blog/:slug`) — view counts, public comment form (pending moderation)
 - Blog by category (`/blog/category/:name`)
 - Blog by tag (`/blog/tag/:tag`)
-- Contact page — form submits to API, sends email notification
-- Newsletter signup — sends confirmation email
-- Appointment booking form
+- Contact page — form submits to API, sends branded confirmation to user + admin notification (Reply-To set to sender)
+- Newsletter signup — sends branded welcome email to subscriber + admin new-subscriber alert
+- Appointment booking form — sends branded confirmation to user + full-detail admin notification (Reply-To set to booker)
 
 ### CMS (Admin area — `/blog/manage`)
 - Login at `/admin/dashboard/login` (hidden from public nav)
@@ -185,3 +185,5 @@ VITE_API_BASE_URL=http://localhost:4000
 - Rate limiting applies to public endpoints: 50 requests per 15 minutes per IP.
 - JWT tokens expire after 24 hours. There is no refresh token mechanism — users must log in again after expiry.
 - MongoDB connection requires `tls: true` for Azure Cosmos DB (configured in `src/config/db.js`).
+- All transactional emails use a shared branded HTML layout (`src/utils/email.js`) — header gradient, info tables, CTA buttons, and footer with address/phone. Admin notification emails have `Reply-To` set to the sender so staff can reply directly from their inbox.
+- Add new admin notification recipients by editing `src/config/adminEmails.js` — no other code changes needed.

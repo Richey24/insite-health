@@ -240,8 +240,6 @@ const FeaturedImagePanel = ({ t, featuredImage, onChange, authFetch }) => {
       const res = await authFetch(`${API_BASE}/api/upload/image`, {
         method: 'POST',
         body: formData,
-        // Do NOT set Content-Type — browser sets it with boundary for multipart
-        headers: {},
       });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || 'Upload failed.');

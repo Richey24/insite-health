@@ -91,12 +91,14 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Authenticated fetch helper — attaches JWT automatically
+  // If body is FormData, does NOT set Content-Type (browser sets it with boundary)
   const authFetch = (url, options = {}) => {
     const token = localStorage.getItem('authToken');
+    const isFormData = options.body instanceof FormData;
     return fetch(url, {
       ...options,
       headers: {
-        'Content-Type': 'application/json',
+        ...(!isFormData && { 'Content-Type': 'application/json' }),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...options.headers,
       },

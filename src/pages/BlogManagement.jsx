@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { toast } from 'sonner';
 import { 
   Plus, 
   Edit, 
@@ -138,8 +139,9 @@ const BlogManagement = () => {
       if (!res.ok || !data.success) throw new Error(data.error || 'Delete failed.');
       setSelectedPosts((prev) => prev.filter((id) => id !== postId));
       await Promise.all([fetchPosts(), fetchStats()]);
+      toast.success('Post deleted.');
     } catch (err) {
-      alert(err.message);
+      toast.error(err.message || 'Failed to delete post.');
     }
   };
 

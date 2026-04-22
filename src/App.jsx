@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useEffect } from 'react'
+import { Toaster } from 'sonner'
 import AuthProvider from './contexts/AuthContext'
 import { BlogContentProvider } from './contexts/BlogContentContext'
 import Header from './components/Header'
@@ -52,6 +53,14 @@ function App() {
     <AuthProvider>
       <BlogContentProvider>
         <Router>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: { fontFamily: 'inherit' },
+            }}
+            richColors
+          />
           <div className="min-h-screen bg-white">
             <Routes>
             {/* Public Routes with Header/Footer */}

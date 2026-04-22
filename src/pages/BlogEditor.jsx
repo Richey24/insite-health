@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'sonner';
 import MultiLanguageBlogEditor from '../components/MultiLanguageBlogEditor';
-import { ArrowLeft, AlertCircle } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
 
@@ -24,7 +25,6 @@ const BlogEditor = () => {
   const [initialData, setInitialData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState(null);
 
   useEffect(() => {
     const loadPost = async () => {
@@ -68,7 +68,6 @@ const BlogEditor = () => {
 
   const handleSave = async (updatedPost) => {
     setIsSaving(true);
-    setSaveError(null);
 
     try {
       const endpoint = id
@@ -96,9 +95,29 @@ const BlogEditor = () => {
         throw new Error(data.error || 'Save failed.');
       }
 
-      navigate('/blog/manage');
+      const savedStatus = updatedPost.status;
+
+      if (savedStatus === 'scheduled' && updatedPost.scheduledAt) {
+        const fmt = new Date(updatedPost.scheduledAt).toLocaleString('en-US', {
+          month: 'short', day: 'numeric', year: 'numeric',
+          hour: '2-digit', minute: '2-digit',
+        });
+        toast.success(`Post scheduled — publishing ${fmt}`);
+        // Stay on editor so the user can keep tweaking
+      } else if (savedStatus === 'published') {
+        toast.success(id ? 'Post updated and published.' : 'Post published successfully.');
+        navigate('/blog/manage');
+      } else if (savedStatus === 'draft') {
+        toast.success('Draft saved.');
+        // Stay on editor
+      } else if (savedStatus === 'archived') {
+        toast.success('Post archived.');
+        navigate('/blog/manage');
+      } else {
+        navigate('/blog/manage');
+      }
     } catch (err) {
-      setSaveError(err.message);
+      toast.error(err.message || 'Something went wrong. Please try again.');
     } finally {
       setIsSaving(false);
     }
@@ -147,12 +166,6 @@ const BlogEditor = () => {
               {t('common.cancel')}
             </button>
           </div>
-          {saveError && (
-            <div className="mt-2 flex items-center gap-2 text-red-600 text-sm">
-              <AlertCircle className="h-4 w-4 flex-shrink-0" />
-              <span>{saveError}</span>
-            </div>
-          )}
         </div>
       </div>
 

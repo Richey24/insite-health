@@ -482,7 +482,7 @@ const AuthorPanel = ({ t, author, onChange, authors = [] }) => {
 // ─────────────────────────────────────────────
 // Publish panel
 // ─────────────────────────────────────────────
-const PublishPanel = ({ t, status, publishDate, isEditing, onSaveDraft, onPublish, onSwitchToDraft, canPublish }) => {
+const PublishPanel = ({ t, status, scheduledAt, isEditing, onSaveDraft, onPublish, onSchedule, onSwitchToDraft, canPublish }) => {
   const statusColors = {
     draft:     'bg-yellow-100 text-yellow-800',
     published: 'bg-green-100  text-green-800',
@@ -500,14 +500,23 @@ const PublishPanel = ({ t, status, publishDate, isEditing, onSaveDraft, onPublis
         </span>
       </div>
 
-      {/* Publish date */}
-      {(status === 'scheduled' || status === 'published') && (
+      {/* Scheduled date display */}
+      {status === 'scheduled' && scheduledAt && (
         <div className="flex items-center gap-2 text-xs text-gray-500">
           <Calendar className="h-3.5 w-3.5" />
-          {status === 'scheduled' ? t('editor.scheduledFor') : t('editor.publishDate')}:
+          {t('editor.scheduledFor')}:
           <span className="text-gray-700 font-medium">
-            {publishDate ? new Date(publishDate).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—'}
+            {new Date(scheduledAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
           </span>
+        </div>
+      )}
+
+      {/* Published date display */}
+      {status === 'published' && (
+        <div className="flex items-center gap-2 text-xs text-gray-500">
+          <Calendar className="h-3.5 w-3.5" />
+          {t('editor.publishDate')}:
+          <span className="text-gray-700 font-medium">{t('editor.publishedNow')}</span>
         </div>
       )}
 
@@ -526,10 +535,19 @@ const PublishPanel = ({ t, status, publishDate, isEditing, onSaveDraft, onPublis
           {t('editor.saveDraft')}
         </button>
         {canPublish && (
-          <button type="button" onClick={onPublish}
-            className="w-full px-3 py-2 bg-insite-blue text-white rounded-lg text-sm font-medium hover:bg-insite-blue/90 transition-colors">
-            {isEditing ? t('editor.updatePost') : t('editor.publishNow')}
-          </button>
+          <>
+            {status === 'scheduled' ? (
+              <button type="button" onClick={onSchedule}
+                className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors">
+                {t('editor.updateSchedule')}
+              </button>
+            ) : (
+              <button type="button" onClick={onPublish}
+                className="w-full px-3 py-2 bg-insite-blue text-white rounded-lg text-sm font-medium hover:bg-insite-blue/90 transition-colors">
+                {isEditing ? t('editor.updatePost') : t('editor.publishNow')}
+              </button>
+            )}
+          </>
         )}
       </div>
     </SidebarPanel>
@@ -663,7 +681,7 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing, can
 
   // ── Global post fields ──
   const [status,        setStatus]        = useState(initialData?.status        || 'draft');
-  const [publishDate,   setPublishDate]   = useState(initialData?.publishDate   || null);
+  const [scheduledAt,   setScheduledAt]   = useState(initialData?.scheduledAt   || null);
   const [featuredImage, setFeaturedImage] = useState(initialData?.featuredImage || { url: '', altText: '' });
   const [categories,    setCategories]    = useState(initialData?.categories    || []);
   const [allCategories, setAllCategories] = useState(PREDEFINED_CATEGORIES);
@@ -676,7 +694,7 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing, can
     if (initialData?.featuredImage) setFeaturedImage(initialData.featuredImage);
     if (initialData?.categories)    setCategories(initialData.categories);
     if (initialData?.author)        setAuthor(initialData.author);
-    if (initialData?.publishDate)   setPublishDate(initialData.publishDate);
+    if (initialData?.scheduledAt)   setScheduledAt(initialData.scheduledAt);
   }, [initialData]);
 
   // ── Helpers ──
@@ -710,17 +728,18 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing, can
 
   const buildPayload = (overrideStatus) => ({
     ...initialData,
-    status: overrideStatus ?? status,
-    publishDate,
+    status:      overrideStatus ?? status,
+    scheduledAt: (overrideStatus ?? status) === 'scheduled' ? scheduledAt : null,
     featuredImage,
     categories,
     author,
     content: langContent,
   });
 
-  const handleSaveDraft    = () => { setStatus('draft');     onSave(buildPayload('draft')); };
-  const handlePublish      = () => { setStatus('published'); onSave(buildPayload('published')); };
-  const handleSwitchDraft  = () => { setStatus('draft');     onSave(buildPayload('draft')); };
+  const handleSaveDraft   = () => { setStatus('draft');     onSave(buildPayload('draft')); };
+  const handlePublish     = () => { setStatus('published'); onSave(buildPayload('published')); };
+  const handleSchedule    = () => { setStatus('scheduled'); onSave(buildPayload('scheduled')); };
+  const handleSwitchDraft = () => { setStatus('draft');     onSave(buildPayload('draft')); };
 
   const availLangs    = Object.keys(langContent);
   const unaddedLangs  = supportedLanguages.filter(l => !availLangs.includes(l.code));
@@ -888,11 +907,12 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing, can
           <PublishPanel
             t={t}
             status={status}
-            publishDate={publishDate}
+            scheduledAt={scheduledAt}
             isEditing={isEditing}
             canPublish={canPublish}
             onSaveDraft={handleSaveDraft}
             onPublish={handlePublish}
+            onSchedule={handleSchedule}
             onSwitchToDraft={handleSwitchDraft}
           />
 
@@ -933,28 +953,42 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing, can
           />
 
           {/* Publish date (shown when scheduling) */}
-          <SidebarPanel title="Schedule" icon={Calendar} defaultOpen={false}>
-            <Field label="Publish Status">
+          <SidebarPanel title={t('editor.schedulePanel')} icon={Calendar} defaultOpen={false}>
+            <Field label={t('editor.publishStatus')}>
               <select
                 value={status}
                 onChange={e => setStatus(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent"
               >
-                <option value="draft">Draft</option>
-                {canPublish && <option value="published">Published</option>}
-                {canPublish && <option value="scheduled">Scheduled</option>}
-                <option value="archived">Archived</option>
+                <option value="draft">{t('editor.draft')}</option>
+                {canPublish && <option value="published">{t('editor.published')}</option>}
+                {canPublish && <option value="scheduled">{t('editor.scheduled')}</option>}
+                <option value="archived">{t('editor.archived')}</option>
               </select>
             </Field>
-            {(status === 'scheduled' || status === 'published') && (
-              <Field label={t('editor.publishDate')}>
-                <input
-                  type="datetime-local"
-                  value={publishDate ? new Date(publishDate).toISOString().slice(0, 16) : ''}
-                  onChange={e => setPublishDate(e.target.value ? new Date(e.target.value) : null)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent"
-                />
-              </Field>
+
+            {status === 'scheduled' && (
+              <>
+                <Field label={t('editor.scheduledFor')}>
+                  <input
+                    type="datetime-local"
+                    min={new Date(Date.now() + 60000).toISOString().slice(0, 16)}
+                    value={scheduledAt ? new Date(scheduledAt).toISOString().slice(0, 16) : ''}
+                    onChange={e => setScheduledAt(e.target.value ? new Date(e.target.value) : null)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:ring-2 focus:ring-insite-blue focus:border-transparent"
+                  />
+                </Field>
+                {canPublish && (
+                  <button
+                    type="button"
+                    onClick={handleSchedule}
+                    disabled={!scheduledAt}
+                    className="w-full px-3 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  >
+                    {t('editor.schedulePost')}
+                  </button>
+                )}
+              </>
             )}
           </SidebarPanel>
 

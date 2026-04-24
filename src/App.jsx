@@ -22,6 +22,7 @@ import AssetTracking from './pages/services/AssetTracking'
 import MobileSecurity from './pages/services/MobileSecurity'
 import CapitalPlanning from './pages/services/CapitalPlanning'
 import SiteMonitoring from './pages/services/SiteMonitoring'
+import PilotSetup from './pages/PilotSetup'
 import BlogCategory from './pages/BlogCategory'
 import BlogTag from './pages/BlogTag'
 import './i18n' // Initialize i18n
@@ -152,6 +153,13 @@ function App() {
               <>
                 <Header />
                 <SiteMonitoring />
+                <Footer />
+              </>
+            } />
+            <Route path="/pilot-setup" element={
+              <>
+                <Header />
+                <PilotSetup />
                 <Footer />
               </>
             } />

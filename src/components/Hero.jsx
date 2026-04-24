@@ -1,6 +1,7 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination, EffectFade } from 'swiper/modules';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 // Import Swiper styles
 import 'swiper/css';
@@ -10,7 +11,6 @@ import 'swiper/css/effect-fade';
 
 const Hero = () => {
   const { t } = useTranslation();
-  
   const slides = [
     {
       id: 1,
@@ -91,14 +91,20 @@ const Hero = () => {
                     {slide.tagline}
                   </p>
                   
-                  {/* CTA Button */}
-                  <div className="flex justify-center">
+                  {/* CTA Buttons */}
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                     <a
                       href={slide.ctaLink}
                       className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-white bg-insite-orange hover:bg-insite-orange/90 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
                     >
                       {slide.ctaText}
                     </a>
+                    <Link
+                      to="/pilot-setup"
+                      className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold text-white border-2 border-white hover:bg-white hover:text-insite-blue rounded-lg transition-all duration-300 transform hover:scale-105"
+                    >
+                      {t('common.startYourPilot')}
+                    </Link>
                   </div>
                 </div>
               </div>

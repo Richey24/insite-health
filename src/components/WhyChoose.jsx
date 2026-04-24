@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
 import { 
   Play, 
@@ -73,12 +74,12 @@ const WhyChoose = () => {
               >
                 {t('whyChoose.getStarted')}
               </a>
-              <a
-                href="#demo"
+              <Link
+                to="/pilot-setup"
                 className="btn-outline inline-flex items-center justify-center"
               >
-                {t('whyChoose.scheduleDemo')}
-              </a>
+                {t('common.startYourPilot')}
+              </Link>
             </div>
           </div>
 

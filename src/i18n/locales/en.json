@@ -914,6 +914,7 @@
     "charCount": "characters"
   },
   "common": {
+    "startYourPilot": "Start Your Pilot",
     "loading": "Loading...",
     "save": "Save",
     "cancel": "Cancel",

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'sonner';
+import { CATEGORY_LABEL_MAP } from '../components/MultiLanguageBlogEditor';
 import { 
   Plus, 
   Edit, 
@@ -385,7 +386,7 @@ const BlogManagement = () => {
                             <div className="flex flex-wrap gap-1 mt-1">
                               {(post.categories || []).map((cat, i) => (
                                 <span key={i} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                                  {cat}
+                                  {CATEGORY_LABEL_MAP[cat] || cat.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())}
                                 </span>
                               ))}
                             </div>

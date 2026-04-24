@@ -1,4 +1,5 @@
 import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { useTranslation } from 'react-i18next';
 
@@ -127,12 +128,12 @@ const Solutions = () => {
               >
                 {t('homepage.scheduleDemo')}
               </a>
-              <a
-                href="#"
+              <Link
+                to="/pilot-setup"
                 className="btn-outline text-center"
               >
-                {t('homepage.learnMore')}
-              </a>
+                {t('common.startYourPilot')}
+              </Link>
             </div>
           </div>
         </div>

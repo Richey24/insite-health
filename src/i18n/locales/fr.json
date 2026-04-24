@@ -874,6 +874,7 @@
     "removeColumn": "Remove Column"
   },
   "common": {
+    "startYourPilot": "Démarrez votre pilote",
     "loading": "Chargement...",
     "save": "Sauvegarder",
     "cancel": "Annuler",

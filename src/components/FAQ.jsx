@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { ChevronDown, ChevronUp, HelpCircle } from 'lucide-react';
 
 const FAQ = () => {
@@ -106,12 +107,12 @@ const FAQ = () => {
                 >
                   {t('faq.contactTeam')}
                 </a>
-                <a
-                  href="#demo"
+                <Link
+                  to="/pilot-setup"
                   className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white border-2 border-white hover:bg-white hover:text-insite-blue rounded-lg transition-all duration-300"
                 >
-                  {t('faq.scheduleDemo')}
-                </a>
+                  {t('common.startYourPilot')}
+                </Link>
               </div>
             </div>
           </div>

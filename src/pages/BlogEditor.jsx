@@ -141,21 +141,21 @@ const BlogEditor = () => {
       {/* Top nav bar */}
       <div className="bg-white shadow-sm border-b">
         <div className="container-custom py-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
               <Link
                 to="/blog/manage"
-                className="flex items-center text-gray-600 hover:text-insite-blue transition-colors text-sm"
+                className="flex items-center text-gray-600 hover:text-insite-blue transition-colors text-sm flex-shrink-0"
               >
-                <ArrowLeft className="h-4 w-4 mr-1.5" />
-                {t('common.back')}
+                <ArrowLeft className="h-4 w-4 mr-1" />
+                <span className="hidden sm:inline">{t('common.back')}</span>
               </Link>
-              <span className="h-4 w-px bg-gray-300" />
-              <h1 className="text-lg font-bold text-gray-900">
+              <span className="h-4 w-px bg-gray-300 hidden sm:block" />
+              <h1 className="text-base sm:text-lg font-bold text-gray-900 truncate">
                 {id ? t('blog.editPost') : t('blog.newPost')}
               </h1>
               {isSaving && (
-                <span className="text-sm text-gray-500 animate-pulse">Saving...</span>
+                <span className="text-sm text-gray-500 animate-pulse hidden sm:inline">Saving...</span>
               )}
             </div>
             <button

@@ -254,7 +254,7 @@ const TeamPage = () => {
         )}
 
         {/* ── Section 3: Clinical Advisory ── */}
-        {clinical.length > 0 && (
+        {/* {clinical.length > 0 && (
           <section>
             <SectionHeading
               label={t('team.sectionClinical')}
@@ -269,7 +269,7 @@ const TeamPage = () => {
               ))}
             </div>
           </section>
-        )}
+        )} */}
 
         {/* ── Section 4: Dev & Support ── */}
         {dev.length > 0 && (

@@ -1,4 +1,5 @@
 import { Clock, MapPin, FileText, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useScrollAnimation } from '../hooks/useScrollAnimation';
 import { useTranslation } from 'react-i18next';
 
@@ -110,6 +111,25 @@ const Features = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* Pilot CTA strip */}
+        <div className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-6 bg-insite-blue/5 border border-insite-blue/15 rounded-2xl px-8 py-6">
+          <div>
+            <p className="text-base font-semibold text-gray-900">
+              Ready to see InSite in your facility?
+            </p>
+            <p className="text-sm text-gray-500 mt-0.5">
+              Set up a pilot in under a week — no long-term commitment required.
+            </p>
+          </div>
+          <Link
+            to="/pilot-setup"
+            className="shrink-0 inline-flex items-center gap-2 px-7 py-3 bg-insite-blue text-white font-semibold text-sm rounded-lg hover:bg-insite-blue/90 transition-colors shadow-md hover:shadow-lg"
+          >
+            {t('common.startYourPilot')}
+            <ArrowRight className="w-4 h-4" />
+          </Link>
         </div>
       </div>
     </section>

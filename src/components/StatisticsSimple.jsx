@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 import { 
   Building2, 
   Activity, 
@@ -110,12 +111,12 @@ const Statistics = () => {
               >
                 {t('statistics.getStarted')}
               </a>
-              <a
-                href="#demo"
+              <Link
+                to="/pilot-setup"
                 className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white border-2 border-white hover:bg-white hover:text-insite-blue rounded-lg transition-all duration-300"
               >
-                {t('statistics.scheduleDemo')}
-              </a>
+                {t('common.startYourPilot')}
+              </Link>
             </div>
           </div>
         </div>

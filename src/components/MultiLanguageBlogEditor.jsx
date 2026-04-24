@@ -18,17 +18,23 @@ import CharacterCount from '@tiptap/extension-character-count';
 // Constants
 // ─────────────────────────────────────────────
 const PREDEFINED_CATEGORIES = [
-  { slug: 'healthcare-technology', label: 'Healthcare Technology' },
-  { slug: 'digital-health',        label: 'Digital Health' },
-  { slug: 'compliance',            label: 'Compliance' },
-  { slug: 'asset-management',      label: 'Asset Management' },
-  { slug: 'telemedicine',          label: 'Telemedicine' },
-  { slug: 'mobile-health',         label: 'Mobile Health' },
-  { slug: 'data-analytics',        label: 'Data Analytics' },
-  { slug: 'patient-safety',        label: 'Patient Safety' },
-  { slug: 'case-study',            label: 'Case Study' },
-  { slug: 'technology',            label: 'Technology' },
+  { slug: 'healthcare-technology',  label: 'Healthcare Technology' },
+  { slug: 'digital-health',         label: 'Digital Health' },
+  { slug: 'compliance',             label: 'Compliance' },
+  { slug: 'asset-management',       label: 'Asset Management' },
+  { slug: 'telemedicine',           label: 'Telemedicine' },
+  { slug: 'mobile-health',          label: 'Mobile Health' },
+  { slug: 'data-analytics',         label: 'Data Analytics' },
+  { slug: 'patient-safety',         label: 'Patient Safety' },
+  { slug: 'case-study',             label: 'Case Study' },
+  { slug: 'technology',             label: 'Technology' },
+  { slug: 'ai-ml',                  label: 'AI & ML' },
+  { slug: 'healthcare-economics',   label: 'Healthcare Economics' },
 ];
+
+export const CATEGORY_LABEL_MAP = Object.fromEntries(
+  PREDEFINED_CATEGORIES.map(({ slug, label }) => [slug, label])
+);
 
 const toSlug = (str) =>
   str.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-');
@@ -697,6 +703,23 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing, can
     if (initialData?.scheduledAt)   setScheduledAt(initialData.scheduledAt);
   }, [initialData]);
 
+  // Fetch categories from API and merge with predefined list
+  useEffect(() => {
+    const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:4000';
+    fetch(`${API_BASE}/api/blog/categories`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.categories) && data.categories.length > 0) {
+          const existing = new Set(PREDEFINED_CATEGORIES.map(c => c.slug));
+          const extras = data.categories
+            .filter(slug => !existing.has(slug))
+            .map(slug => ({ slug, label: slug.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) }));
+          if (extras.length > 0) setAllCategories([...PREDEFINED_CATEGORIES, ...extras]);
+        }
+      })
+      .catch(() => {}); // silently fall back to PREDEFINED_CATEGORIES
+  }, []);
+
   // ── Helpers ──
   const addLang = (code) => setLangContent(prev => ({
     ...prev,
@@ -750,7 +773,7 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing, can
     <div className="min-h-screen bg-gray-50">
       {/* ── Language tabs bar ── */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-20 shadow-sm">
-        <div className="max-w-screen-xl mx-auto px-6 py-3 flex flex-wrap items-center gap-2">
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center gap-2">
           <Globe className="h-4 w-4 text-insite-blue flex-shrink-0" />
 
           {availLangs.map(code => {
@@ -802,7 +825,7 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing, can
             </select>
           )}
 
-          <div className="ml-auto flex items-center gap-2 text-xs text-gray-400">
+          <div className="ml-auto flex items-center gap-2 text-xs text-gray-400 flex-shrink-0">
             <span>{availLangs.length}/{supportedLanguages.length} languages</span>
             <span className={`px-2 py-0.5 rounded-full font-medium ${
               status === 'published' ? 'bg-green-100 text-green-700' :
@@ -814,7 +837,7 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing, can
       </div>
 
       {/* ── Main layout ── */}
-      <div className="max-w-screen-xl mx-auto px-6 py-8 flex gap-7 items-start">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col lg:flex-row gap-6 lg:gap-7 items-start">
 
         {/* ════ LEFT — main content ════ */}
         <div className="flex-1 min-w-0 space-y-5">
@@ -901,7 +924,7 @@ const MultiLanguageBlogEditor = ({ initialData, onSave, onCancel, isEditing, can
         </div>
 
         {/* ════ RIGHT — sticky sidebar ════ */}
-        <div className="w-72 flex-shrink-0 space-y-4 sticky top-[72px]">
+        <div className="w-full lg:w-72 lg:flex-shrink-0 space-y-4 lg:sticky lg:top-[72px] order-first lg:order-last">
 
           {/* Publish */}
           <PublishPanel
